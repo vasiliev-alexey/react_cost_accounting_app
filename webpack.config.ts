@@ -9,7 +9,7 @@ const webpackConfig = (env: {
   production: boolean;
   development: boolean;
 }): Configuration => ({
-  entry: './src/index.tsx',
+  entry: './src/ts/index.tsx',
   ...(env.production || !env.development ? {} : { devtool: 'eval-source-map' }),
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
@@ -34,11 +34,22 @@ const webpackConfig = (env: {
         },
         exclude: /dist/,
       },
+      {
+        test: /\.(sass|less|css)$/,
+        use: [
+          // Creates `style` nodes from JS strings
+          'style-loader',
+          // Translates CSS into CommonJS
+          'css-loader',
+          // Compiles Sass to CSS
+          'sass-loader',
+        ],
+      },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './src/index.html',
+      template: './src/html/index.html',
     }),
     new webpack.DefinePlugin({
       'process.env.PRODUCTION': env.production || !env.development,

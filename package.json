@@ -14,6 +14,7 @@
     "loki-test": "loki --requireReference --reactUri file:./dist ",
     "build-storybook": "build-storybook -o ./dist --quiet",
     "deploy-storybook": "storybook-to-ghpages"
+
   },
   "keywords": [],
   "author": "vasiliev-alexey",
@@ -59,17 +60,23 @@
     "jest": "^27.0.6",
     "lint-staged": "^11.0.0",
     "prettier": "2.3.2",
+    "sass": "^1.35.2",
+    "sass-loader": "^12.1.0",
     "ts-jest": "^27.0.3",
     "ts-loader": "8.3.0",
     "ts-node": "9.1.1",
     "tsconfig-paths-webpack-plugin": "^3.5.1",
     "typescript": "4.3.5",
-    "webpack": "^5.31.2",
+    "webpack": "^5.45.1",
     "webpack-cli": "4.7.2",
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
+    "bootstrap": "^5.0.2",
+    "bootswatch": "^5.0.2",
+    "node-sass": "^6.0.1",
     "react": "^17.0.2",
+    "react-bootstrap": "^1.6.1",
     "react-dom": "^17.0.2"
   },
   "lint-staged": {
