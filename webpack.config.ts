@@ -35,7 +35,7 @@ const webpackConfig = (env: {
         exclude: /dist/,
       },
       {
-        test: /\.(sass|less|css)$/,
+        test: /\.scss$/,
         use: [
           // Creates `style` nodes from JS strings
           'style-loader',

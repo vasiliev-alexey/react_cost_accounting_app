@@ -14,7 +14,6 @@
     "loki-test": "loki --requireReference --reactUri file:./dist ",
     "build-storybook": "build-storybook -o ./dist --quiet",
     "deploy-storybook": "storybook-to-ghpages"
-
   },
   "keywords": [],
   "author": "vasiliev-alexey",
