@@ -1,5 +1,5 @@
 import React from 'react';
-import imgCost from '../../img/cost.png';
+import imgCost from '../../../img/cost.png';
 
 export class Logo extends React.Component<{}, {}> {
   render(): React.ReactElement {
