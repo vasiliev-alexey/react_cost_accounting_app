@@ -31,6 +31,12 @@ export class Navigation extends React.Component<{}, {}> {
             Просмотр статистики
           </Nav.Link>
         </Nav.Item>
+
+        <Nav.Item>
+          <Nav.Link eventKey="1" href="#/tz">
+            Просмотр Задания
+          </Nav.Link>
+        </Nav.Item>
       </Nav>
     );
   }

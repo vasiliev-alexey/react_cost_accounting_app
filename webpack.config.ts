@@ -34,8 +34,17 @@ const webpackConfig = (env: {
         },
         exclude: /dist/,
       },
+
       {
-        test: /\.scss$/,
+        test: /\.png/,
+        use: {
+          loader: 'url-loader',
+        },
+        include: [path.resolve(__dirname, 'src/img')],
+      },
+
+      {
+        test: /\.(sass|scss|css)$/,
         use: [
           // Creates `style` nodes from JS strings
           'style-loader',

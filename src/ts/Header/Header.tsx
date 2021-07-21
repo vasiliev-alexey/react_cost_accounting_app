@@ -5,8 +5,7 @@ export class Header extends React.Component<{}, {}> {
   render(): React.ReactElement {
     return (
       <div>
-        <p>Header</p>
-        <Button variant="outline-info">s2sssad</Button>
+        <Button variant="outline-info">Login</Button>
       </div>
     );
   }

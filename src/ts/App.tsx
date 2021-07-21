@@ -5,6 +5,8 @@ import { Col, Container, Row } from 'react-bootstrap';
 import './../css/index.scss';
 import { Header } from './Header/Header';
 import { Navigation } from './Navbar/Navigation';
+import { Logo } from './Logo/Logo';
+import { Task } from './Task/Task';
 
 type RootStateType = {};
 
@@ -14,17 +16,27 @@ export class App extends Component<{}, RootStateType> {
       <>
         <Container>
           <Row>
-            <Col>1 of 3</Col>
-            <Col xs={10}></Col>
+            <Col />
+            <Col>
+              <Logo />
+            </Col>
+            <Col xl={10} />
             <Col>
               <Header />
             </Col>
           </Row>
+
           <Row>
-            <Col>
+            <hr />
+          </Row>
+          <Row>
+            <Col xl={3}>
               <Navigation />
             </Col>
-            <Col xs={5}>Main View Component</Col>
+            <Col xl={7}>
+              <Task />
+            </Col>
+            <Col xl={1} />
           </Row>
         </Container>
       </>
