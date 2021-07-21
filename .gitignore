@@ -1,0 +1,9 @@
+.idea/
+.vscode/
+node_modules/
+
+.eslintcache
+doc/Заметки.md
+/coverage
+
+/dist
