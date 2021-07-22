@@ -6,6 +6,7 @@ export class Navigation extends React.Component<{}, {}> {
   render(): React.ReactElement {
     return (
       <Nav
+        data-testid={'Navigation-Test-Id'}
         style={{ width: '20%' }}
         justify
         variant="pills"
@@ -27,27 +28,15 @@ export class Navigation extends React.Component<{}, {}> {
           </LinkContainer>
         </Nav.Item>
         <Nav.Item>
-          {/*<Nav.Link eventKey="1" href="/task/1">*/}
-          {/*  Просмотр статистики*/}
-          {/*</Nav.Link>*/}
-
           <LinkContainer to="/statistics">
             <Nav.Link>Просмотр статистики</Nav.Link>
           </LinkContainer>
         </Nav.Item>
 
         <Nav.Item>
-          {/*<Nav.Link as={Link} to="/task" eventKey="category" title="Category">*/}
-          {/*    Просмотр Задания*/}
-          {/*</Nav.Link>*/}
-
           <LinkContainer to="/task">
             <Nav.Link>Просмотр Задания</Nav.Link>
           </LinkContainer>
-
-          {/*<Nav.Link eventKey="1" href="/task">*/}
-          {/*  Просмотр Задания*/}
-          {/*</Nav.Link>*/}
         </Nav.Item>
       </Nav>
     );
