@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 
-export class Costs extends React.Component<{}, {}> {
+export class Statistics extends React.Component<{}, {}> {
   render(): ReactElement {
-    return <p>Ввод расходов</p>;
+    return <p>Статистика расходов</p>;
   }
 }

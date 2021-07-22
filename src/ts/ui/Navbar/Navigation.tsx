@@ -1,5 +1,6 @@
 import React from 'react';
 import { Nav } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
 export class Navigation extends React.Component<{}, {}> {
   render(): React.ReactElement {
@@ -8,34 +9,45 @@ export class Navigation extends React.Component<{}, {}> {
         style={{ width: '20%' }}
         justify
         variant="pills"
-        activeKey="1"
         className="flex-column"
       >
         <Nav.Item>
-          <Nav.Link eventKey="1" href="/#home">
-            о проекте
-          </Nav.Link>
+          <LinkContainer to="/">
+            <Nav.Link>О проекте</Nav.Link>
+          </LinkContainer>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="1" href="#/home1">
-            настройка
-          </Nav.Link>
+          <LinkContainer to="/settings">
+            <Nav.Link>Настройка</Nav.Link>
+          </LinkContainer>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="1" href="#/home2">
-            Ввод расходов
-          </Nav.Link>
+          <LinkContainer to="/costs">
+            <Nav.Link>Ввод расходов</Nav.Link>
+          </LinkContainer>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="1" href="#/home3">
-            Просмотр статистики
-          </Nav.Link>
+          {/*<Nav.Link eventKey="1" href="/task/1">*/}
+          {/*  Просмотр статистики*/}
+          {/*</Nav.Link>*/}
+
+          <LinkContainer to="/statistics">
+            <Nav.Link>Просмотр статистики</Nav.Link>
+          </LinkContainer>
         </Nav.Item>
 
         <Nav.Item>
-          <Nav.Link eventKey="1" href="#/tz">
-            Просмотр Задания
-          </Nav.Link>
+          {/*<Nav.Link as={Link} to="/task" eventKey="category" title="Category">*/}
+          {/*    Просмотр Задания*/}
+          {/*</Nav.Link>*/}
+
+          <LinkContainer to="/task">
+            <Nav.Link>Просмотр Задания</Nav.Link>
+          </LinkContainer>
+
+          {/*<Nav.Link eventKey="1" href="/task">*/}
+          {/*  Просмотр Задания*/}
+          {/*</Nav.Link>*/}
         </Nav.Item>
       </Nav>
     );
