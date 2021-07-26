@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 // import "./../css/bootstrap.css";
 import 'bootswatch/dist/cosmo/bootstrap.min.css';
+// import '@nosferatu500/react-sortable-tree/style.css';
+import 'react-sortable-tree/style.css';
 import { Col, Container, Row } from 'react-bootstrap';
 import '../../css/index.scss';
 import { Header } from './Header/Header';
