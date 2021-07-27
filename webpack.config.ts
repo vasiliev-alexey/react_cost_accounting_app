@@ -10,7 +10,7 @@ const webpackConfig = (env: {
   development: boolean;
 }): Configuration => ({
   entry: './src/ts/index.tsx',
-  ...(env.production || !env.development ? {} : { devtool: 'eval-source-map' }),
+  ...(env.production || !env.development ? {} : { devtool: 'source-map' }),
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
     //TODO waiting on https://github.com/dividab/tsconfig-paths-webpack-plugin/issues/61
