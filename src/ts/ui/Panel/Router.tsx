@@ -2,7 +2,7 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { Task } from '../Task/Task';
 import { MainPanel } from '../About/MainPanel';
-import { Settings } from './Settings/Settings';
+import Settings from './Settings/Settings';
 import { Costs } from './Costs/Costs';
 import { Statistics } from './Statistics/Statistics';
 

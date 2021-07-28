@@ -7,6 +7,8 @@ import SortableTree, {
   TreeItem,
 } from 'react-sortable-tree';
 import { Button } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { increment } from '../../../store/appSlice';
 
 interface NodeType {
   id?: string;
@@ -17,7 +19,7 @@ interface NodeType {
   removed?: boolean;
 }
 
-export class Settings extends Component<
+class Settings extends Component<
   {},
   {
     selectedItem?: TreeItem;
@@ -66,7 +68,6 @@ export class Settings extends Component<
   }
 
   onChange = (treeData: NodeType[]): void => {
-    //console.log(treeData);
     this.setState({ treeData });
   };
 
@@ -76,7 +77,6 @@ export class Settings extends Component<
 
   removeNode = (rowInfo: ExtendedNodeData): void => {
     const { path } = rowInfo;
-    console.log(path, this.state.treeData);
 
     const item =
       rowInfo.node !== null &&
@@ -110,6 +110,8 @@ export class Settings extends Component<
 
   addCategory = (): void => {
     const item = this.state.selectedItem;
+    console.log('call inc');
+    this.props.increment({ data: 'data' });
 
     if (item !== null) {
       console.log('aaa');
@@ -122,7 +124,6 @@ export class Settings extends Component<
       root.push({ id: Math.random().toString(), title: 'sssss' });
       this.setState({ treeData: root });
     }
-    // this.forceUpdate();
   };
 
   render(): React.ReactElement {
@@ -149,10 +150,12 @@ export class Settings extends Component<
 
             buttons: [
               <button key={1} onClick={() => this.doSomething(rowInf)}>
-                +
+                &#10010;
               </button>,
               true && (
-                <button onClick={() => this.removeNode(rowInf)}>-</button>
+                <button onClick={() => this.removeNode(rowInf)}>
+                  &#10006;
+                </button>
               ),
             ],
           })}
@@ -180,3 +183,26 @@ export class Settings extends Component<
     );
   }
 }
+
+interface StateProps {
+  isOn: boolean;
+}
+interface DispatchProps {
+  increment: () => void;
+}
+
+const dispatchProps = {
+  increment: increment,
+};
+
+type HocProps = ReturnType<typeof mapStateToProps> &
+  typeof dispatchProps & {
+    // here you can extend ConnectedHoc with new props
+    overrideCount?: number;
+  };
+
+//export default Settings;
+export default connect<StateProps, typeof dispatchProps>(
+  null,
+  dispatchProps
+)(Settings);
