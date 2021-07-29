@@ -1,31 +1,30 @@
 import { createSlice } from '@reduxjs/toolkit';
-// import type { RootState } from './store';
-import { TreeItem } from 'react-sortable-tree';
 
-// Define a type for the slice state
-interface AppState {
-  treeData: TreeItem[];
-}
-
-// Define the initial state using that type
-const initialState: AppState = {
-  treeData: [],
-};
-
-export const counterSlice = createSlice({
-  name: 'treeData',
-  // `createSlice` will infer the state type from the `initialState` argument
-  initialState,
+// basic example slice copied from the docs
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: {
+    value: 0,
+  },
   reducers: {
-    increment: (state, action) => {
-      console.log('reducer inc', action);
+    increment: (state) => {
+      console.log('click');
+      state.value += 1;
+    },
+    decrement: (state) => {
+      state.value -= 1;
+    },
+    incrementByAmount: (state, action) => {
+      state.value += action.payload;
     },
   },
 });
 
-export const { increment } = counterSlice.actions;
+// destructure actions and reducer from the slice (or you can access as counterSlice.actions)
+const { actions, reducer } = counterSlice;
 
-// Other code such as selectors can use the imported `RootState` type
-//export const selectCount = (state: RootState) => state.counter.value;
+// export individual action creator functions
+export const { increment } = actions;
 
-export default counterSlice.reducer;
+// often the reducer is a default export, but that doesn't matter
+export default reducer;

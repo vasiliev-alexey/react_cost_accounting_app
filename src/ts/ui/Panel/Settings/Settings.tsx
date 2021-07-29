@@ -1,4 +1,5 @@
 import React, { ChangeEvent, Component } from 'react';
+import { nanoid } from 'nanoid';
 
 //import SortableTree from '@nosferatu500/react-sortable-tree';
 import SortableTree, {
@@ -9,24 +10,20 @@ import SortableTree, {
 import { Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { increment } from '../../../store/appSlice';
+import { RootState } from '../../../store/store';
+import { addItem } from '../../../store/settingsSlice';
+import AddForm from './AddForm';
 
-interface NodeType {
-  id?: string;
-  title: string;
-  subtitle?: string;
-  expanded?: boolean;
-  children?: NodeType[];
-  removed?: boolean;
+interface StateType {
+  selectedItem?: TreeItem;
+  treeData: TreeItem[];
 }
 
 class Settings extends Component<
-  {},
-  {
-    selectedItem?: TreeItem;
-    treeData: TreeItem[];
-  }
+  DispatchProps & ReturnType<typeof mapStateToProps>,
+  StateType
 > {
-  constructor(props: unknown) {
+  constructor(props: DispatchProps & ReturnType<typeof mapStateToProps>) {
     super(props);
     this.state = {
       treeData: [],
@@ -36,6 +33,7 @@ class Settings extends Component<
 
   override componentDidMount(): void {
     console.log('componentDidMount');
+    return;
     this.setState({
       treeData: [
         {
@@ -67,7 +65,7 @@ class Settings extends Component<
     });
   }
 
-  onChange = (treeData: NodeType[]): void => {
+  onChange = (treeData: TreeItem[]): void => {
     this.setState({ treeData });
   };
 
@@ -111,18 +109,30 @@ class Settings extends Component<
   addCategory = (): void => {
     const item = this.state.selectedItem;
     console.log('call inc');
-    this.props.increment({ data: 'data' });
+    //this.props.increment();
 
     if (item !== null) {
       console.log('aaa');
       const child = (item?.children as TreeItem[]) || [];
       item.children = child;
-      child.push({ id: Math.random().toString(), title: 'sssss' });
+      child.push({ id: nanoid(10), title: 'sssss' });
+
+      this.props.addItem({
+        id: nanoid(10),
+        title: 'sssss',
+        children: [],
+      });
+
       this.setState({ selectedItem: item });
     } else {
       const root: TreeItem[] = [...this.state.treeData];
-      root.push({ id: Math.random().toString(), title: 'sssss' });
-      this.setState({ treeData: root });
+      root.push({ id: nanoid(10), title: 'sssss' });
+      this.props.addItem({
+        id: nanoid(10),
+        title: 'sssss',
+        children: [],
+      });
+      // this.setState({ treeData: root });
     }
   };
 
@@ -135,7 +145,7 @@ class Settings extends Component<
     return (
       <div style={{ height: 300 }}>
         <SortableTree
-          treeData={this.state.treeData}
+          treeData={this.props.treeData}
           canDrop={canDrop}
           isVirtualized={false}
           // Need to set getNodeKey to get meaningful ids in paths
@@ -143,8 +153,7 @@ class Settings extends Component<
           onChange={this.onChange}
           generateNodeProps={(rowInf) => ({
             onClick: () => {
-              console.log('onClick', rowInf.node);
-
+              //              console.log('onClick', rowInf.node);
               this.setState({ selectedItem: rowInf.node });
             },
 
@@ -162,19 +171,24 @@ class Settings extends Component<
         />
 
         {this.state.selectedItem !== null ? (
-          <div>
-            <input
-              onChange={this.onChangeInput}
-              type="text"
-              value={this.state.selectedItem?.title?.toString()}
-            />
-            <input
-              onChange={this.onChangeInput}
-              type="text"
-              value={this.state.selectedItem.subtitle?.toString() || ''}
-              placeholder={'subs'}
-            />
-          </div>
+          // <div>
+          //   <input
+          //     onChange={this.onChangeInput}
+          //     type="text"
+          //     value={this.state.selectedItem?.title?.toString()}
+          //   />
+          //   <input
+          //     onChange={this.onChangeInput}
+          //     type="text"
+          //     value={this.state.selectedItem.subtitle?.toString() || ''}
+          //     placeholder={'subs'}
+          //   />
+          // </div>
+
+          <AddForm
+            title={this.state.selectedItem?.title?.toString()}
+            onChangeInput={this.onChangeInput}
+          />
         ) : (
           <div></div>
         )}
@@ -183,26 +197,18 @@ class Settings extends Component<
     );
   }
 }
-
-interface StateProps {
-  isOn: boolean;
-}
 interface DispatchProps {
   increment: () => void;
+  addItem: (i: TreeItem) => void;
 }
 
-const dispatchProps = {
+const mapDispatchToProps = {
+  addItem: addItem,
   increment: increment,
 };
 
-type HocProps = ReturnType<typeof mapStateToProps> &
-  typeof dispatchProps & {
-    // here you can extend ConnectedHoc with new props
-    overrideCount?: number;
-  };
+const mapStateToProps = (state: RootState) => ({
+  treeData: state.setting.treeData,
+});
 
-//export default Settings;
-export default connect<StateProps, typeof dispatchProps>(
-  null,
-  dispatchProps
-)(Settings);
+export default connect(mapStateToProps, mapDispatchToProps)(Settings);
