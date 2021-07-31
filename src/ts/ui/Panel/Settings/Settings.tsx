@@ -1,72 +1,55 @@
-import React, { ChangeEvent, Component } from 'react';
-import { nanoid } from 'nanoid';
-
-//import SortableTree from '@nosferatu500/react-sortable-tree';
-import SortableTree, {
-  ExtendedNodeData,
-  removeNodeAtPath,
-  TreeItem,
-} from 'react-sortable-tree';
+import React, { Component } from 'react';
+import { ExtendedNodeData, TreeItem } from 'react-sortable-tree';
 import { Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { increment } from '../../../store/appSlice';
 import { RootState } from '../../../store/store';
-import { addItem } from '../../../store/settingsSlice';
+import {
+  addItem,
+  loadData,
+  removeNode,
+  syncState,
+} from '../../../store/settingsSlice';
 import AddForm from './AddForm';
+import { Tree } from './Tree';
+
+type PathType = (string | number)[];
 
 interface StateType {
   selectedItem?: TreeItem;
+  selectedPath?: PathType;
   treeData: TreeItem[];
+  newCategoryName?: string;
+  newCategoryDesc?: string;
+}
+export type DispatchPropsType = typeof mapDispatchToProps &
+  ReturnType<typeof mapStateToProps>;
+interface Snapshot {
+  counter: number;
 }
 
-class Settings extends Component<
-  DispatchProps & ReturnType<typeof mapStateToProps>,
-  StateType
-> {
-  constructor(props: DispatchProps & ReturnType<typeof mapStateToProps>) {
+class Settings extends Component<DispatchPropsType, StateType, Snapshot> {
+  constructor(props: DispatchPropsType) {
     super(props);
     this.state = {
-      treeData: [],
+      treeData: props.treeData,
       selectedItem: null,
     };
   }
 
+  componentDidUpdate(prevProps: Readonly<DispatchPropsType>) {
+    if (prevProps.treeData !== this.props.treeData) {
+      this.setState({
+        treeData: this.props.treeData,
+      });
+    }
+  }
+
   override componentDidMount(): void {
-    console.log('componentDidMount');
-    return;
-    this.setState({
-      treeData: [
-        {
-          id: 'trap',
-          title: 'Транспорт',
-          subtitle: 'Регулярные поездки',
-          children: [
-            { id: 'trapped', title: 'Метро' },
-            { id: 'bus', title: 'Автобус' },
-          ],
-        },
-        {
-          id: 'no-grandkids',
-          title: 'Еда',
-          subtitle: "Doesn't allow grandchildren",
-          children: [{ id: 'jimmy', title: 'Jimmy' }],
-        },
-        {
-          id: 'twin-1',
-          title: 'Twin #1',
-          subtitle: "Doesn't play with other twin",
-        },
-        {
-          id: 'twin-2',
-          title: 'Twin #2',
-          subtitle: "Doesn't play with other twin",
-        },
-      ],
-    });
+    this.props.loadData();
   }
 
   onChange = (treeData: TreeItem[]): void => {
-    this.setState({ treeData });
+    this.props.syncState(treeData);
   };
 
   doSomething = (rowInf: unknown): void => {
@@ -75,136 +58,96 @@ class Settings extends Component<
 
   removeNode = (rowInfo: ExtendedNodeData): void => {
     const { path } = rowInfo;
-
-    const item =
-      rowInfo.node !== null &&
-      this.state.selectedItem !== null &&
-      rowInfo.node.id === this.state.selectedItem.id
-        ? { selectedItem: {} }
-        : this.state.selectedItem;
-
-    console.log('item', item);
-
-    this.setState({
-      selectedItem: null,
-      treeData: removeNodeAtPath({
-        treeData: this.state.treeData,
-        path: path, // You can use path from here
-        getNodeKey: ({ node: { id } }) => id,
-        ignoreCollapsed: true,
-      }),
-    });
+    this.props.removeNode(path);
     rowInfo.node = null;
-    //  this.forceUpdate();
   };
 
-  removeNode2 = (rowInf: ExtendedNodeData): void => {
-    console.log('removeNode', JSON.stringify(rowInf.node));
-  };
+  onChangeInput = (evt: React.FormEvent<HTMLInputElement>): void => {
+    console.log('evt', evt.currentTarget.value);
 
-  onChangeInput = (evt: ChangeEvent): void => {
-    console.log('evt', evt.target);
-  };
-
-  addCategory = (): void => {
-    const item = this.state.selectedItem;
-    console.log('call inc');
-    //this.props.increment();
-
-    if (item !== null) {
-      console.log('aaa');
-      const child = (item?.children as TreeItem[]) || [];
-      item.children = child;
-      child.push({ id: nanoid(10), title: 'sssss' });
-
-      this.props.addItem({
-        id: nanoid(10),
-        title: 'sssss',
-        children: [],
-      });
-
-      this.setState({ selectedItem: item });
-    } else {
-      const root: TreeItem[] = [...this.state.treeData];
-      root.push({ id: nanoid(10), title: 'sssss' });
-      this.props.addItem({
-        id: nanoid(10),
-        title: 'sssss',
-        children: [],
-      });
-      // this.setState({ treeData: root });
+    if (evt.currentTarget.name === 'title') {
+      this.setState({ newCategoryName: evt.currentTarget.value });
+    } else if (evt.currentTarget.name === 'desc') {
+      this.setState({ newCategoryDesc: evt.currentTarget.value });
     }
   };
 
+  addCategory = (): void => {
+    this.props.addItem({
+      path: this.state.selectedItem && this.state.selectedPath,
+      title: this.state.newCategoryName,
+      subtitle: this.state.newCategoryDesc,
+    });
+    this.setState({ newCategoryName: '', newCategoryDesc: '' });
+  };
+
+  onNodeClick = (rowInfo: ExtendedNodeData): void => {
+    this.setState({
+      selectedItem: rowInfo.node,
+      selectedPath: rowInfo.path,
+    });
+  };
+
   render(): React.ReactElement {
-    const canDrop = ({}) => {
-      return false;
-    };
+    // const canDrop = ({}) => {
+    //   return false;
+    // };
     console.log('render:', this.state);
 
     return (
       <div style={{ height: 300 }}>
-        <SortableTree
-          treeData={this.props.treeData}
-          canDrop={canDrop}
-          isVirtualized={false}
-          // Need to set getNodeKey to get meaningful ids in paths
-          getNodeKey={({ node }) => node.id}
-          onChange={this.onChange}
-          generateNodeProps={(rowInf) => ({
-            onClick: () => {
-              //              console.log('onClick', rowInf.node);
-              this.setState({ selectedItem: rowInf.node });
-            },
+        {/*<SortableTree*/}
+        {/*  treeData={this.state.treeData}*/}
+        {/*  canDrop={canDrop}*/}
+        {/*  isVirtualized={false}*/}
+        {/*  // Need to set getNodeKey to get meaningful ids in paths*/}
+        {/*  getNodeKey={({ node }) => node.id}*/}
+        {/*  onChange={this.onChange}*/}
+        {/*  generateNodeProps={(rowInf) => ({*/}
+        {/*    onClick: () => {*/}
+        {/*      this.setState({*/}
+        {/*        selectedItem: rowInf.node,*/}
+        {/*        selectedPath: rowInf.path,*/}
+        {/*      });*/}
+        {/*    },*/}
 
-            buttons: [
-              <button key={1} onClick={() => this.doSomething(rowInf)}>
-                &#10010;
-              </button>,
-              true && (
-                <button onClick={() => this.removeNode(rowInf)}>
-                  &#10006;
-                </button>
-              ),
-            ],
-          })}
+        {/*    buttons: [*/}
+        {/*      <Button*/}
+        {/*        key={`removeNode-key`}*/}
+        {/*        onClick={() => this.removeNode(rowInf)}*/}
+        {/*      >*/}
+        {/*        &#10006;*/}
+        {/*      </Button>,*/}
+        {/*    ],*/}
+        {/*  })}*/}
+        {/*/>*/}
+
+        <Tree
+          treeData={this.state.treeData}
+          onChange={this.onChange}
+          removeNode={this.removeNode}
+          onNodeClick={this.onNodeClick}
         />
 
-        {this.state.selectedItem !== null ? (
-          // <div>
-          //   <input
-          //     onChange={this.onChangeInput}
-          //     type="text"
-          //     value={this.state.selectedItem?.title?.toString()}
-          //   />
-          //   <input
-          //     onChange={this.onChangeInput}
-          //     type="text"
-          //     value={this.state.selectedItem.subtitle?.toString() || ''}
-          //     placeholder={'subs'}
-          //   />
-          // </div>
-
-          <AddForm
-            title={this.state.selectedItem?.title?.toString()}
-            onChangeInput={this.onChangeInput}
-          />
-        ) : (
-          <div></div>
-        )}
-        <Button onClick={this.addCategory}>Добавить категорию</Button>
+        <AddForm
+          title={this.state.newCategoryName || ''}
+          subtitle={this.state.newCategoryDesc || ''}
+          onChangeInput={this.onChangeInput}
+        />
+        <Button onClick={this.addCategory}>
+          {(this.state.selectedItem && `Добавить подкатегорию`) ||
+            `Добавить категорию`}
+        </Button>
       </div>
     );
   }
 }
-interface DispatchProps {
-  increment: () => void;
-  addItem: (i: TreeItem) => void;
-}
 
 const mapDispatchToProps = {
   addItem: addItem,
-  increment: increment,
+  loadData: loadData,
+  removeNode: removeNode,
+  syncState: syncState,
 };
 
 const mapStateToProps = (state: RootState) => ({
