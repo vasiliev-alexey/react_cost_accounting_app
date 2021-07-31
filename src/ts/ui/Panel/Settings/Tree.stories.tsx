@@ -47,7 +47,7 @@ tree.args = {
       children: [],
     },
   ],
-  onChange: (treeData: TreeItem[]): void => {},
-  removeNode: (rowInf: ExtendedNodeData) => {},
-  onNodeClick: (rowInf: ExtendedNodeData) => {},
+  // onChange: (treeData: TreeItem[]): void => {},
+  // removeNode: (rowInf: ExtendedNodeData) => {},
+  // onNodeClick: (rowInf: ExtendedNodeData) => {},
 };
