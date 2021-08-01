@@ -38,9 +38,6 @@ export class Task extends React.Component<{}, {}> {
           Нужно иметь возможность выводить расходы за день за неделю за месяц и
           за произвольный промежуток времени вывод таблицей и диаграммой (pie
           chart) Для IOS есть похожее приложение{' '}
-          <a href="https://www.dropbox.com/sh/ayn0gfelhele0nc/AABnZcOcGcIowrGzqZehUSESa/Screenshots/Russian?dl=0#/">
-            https://www.dropbox.com/sh/ayn0gfelhele0nc/AABnZcOcGcIowrGzqZehUSESa/Screenshots/Russian?dl=0#/
-          </a>
         </p>
         <p>
           не стоит возиться с дизайном, можно просто взять 1 из тем с{' '}
