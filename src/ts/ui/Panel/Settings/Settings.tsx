@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, Dispatch } from 'react';
 import { ExtendedNodeData, TreeItem } from 'react-sortable-tree';
 import { Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { RootState } from '../../../store/store';
+import { AppDispatch, RootState } from '../../../store/store';
 import {
   addItem,
+  fetchCategory,
   loadData,
   removeNode,
   syncState,
@@ -148,6 +149,7 @@ const mapDispatchToProps = {
   loadData: loadData,
   removeNode: removeNode,
   syncState: syncState,
+  fetchCategory: fetchCategory,
 };
 
 const mapStateToProps = (state: RootState) => ({

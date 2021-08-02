@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   getNodeAtPath,
   removeNodeAtPath,
@@ -6,6 +6,18 @@ import {
   TreeNode,
 } from 'react-sortable-tree';
 import { nanoid } from 'nanoid';
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+export const fetchCategory = createAsyncThunk(
+  'users/fetchById',
+  // if you type your function argument here
+  async (_: number, { dispatch }) => {
+    console.log();
+    await delay(5000);
+    return [];
+  }
+);
 
 // basic example slice copied from the docs
 const settingSlice = createSlice({
@@ -90,6 +102,15 @@ const settingSlice = createSlice({
       ];
       state.selectedItem = null;
     },
+  },
+
+  extraReducers: (builder) => {
+    builder.addCase(fetchCategory.pending, (state, action) => {
+      console.log('aaa: pending', action.payload);
+    });
+    builder.addCase(fetchCategory.fulfilled, (state, action) => {
+      console.log('aaa: fulfilled:', action.payload);
+    });
   },
 });
 
