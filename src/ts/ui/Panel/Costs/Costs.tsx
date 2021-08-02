@@ -4,7 +4,7 @@ import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 import { DayModifiers } from 'react-day-picker';
 import MomentLocaleUtils from 'react-day-picker/moment';
-import DropdownTreeSelect from 'react-dropdown-tree-select';
+import DropdownTreeSelect, { TreeNode } from 'react-dropdown-tree-select';
 import 'react-dropdown-tree-select/dist/styles.css';
 import NumberFormat from 'react-number-format';
 
@@ -64,13 +64,17 @@ export class Costs extends React.Component<CostsPropsType, {}> {
     console.log(day, dayModifiers, dayPickerInput);
   };
 
-  private onChangeSelect = (): void => {
-    console.log('onChangeSelect');
+  private onChangeSelect = (
+    currentNode: TreeNode,
+    selectedNodes: TreeNode[]
+  ): void => {
+    console.log('onChangeSelect', currentNode, selectedNodes);
   };
 
   private data = {
     label: 'Транспорт',
-    value: 'Транспорт',
+    value: 'asdasd',
+    data: '1111',
     children: [
       {
         label: 'Метро',

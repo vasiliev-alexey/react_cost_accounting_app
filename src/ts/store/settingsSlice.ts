@@ -12,10 +12,11 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export const fetchCategory = createAsyncThunk(
   'users/fetchById',
   // if you type your function argument here
-  async (_: number, { dispatch }) => {
-    console.log();
+  async (f: number, { dispatch }) => {
+    console.log('fetchCategory', f);
+    dispatch({ type: 'ss' });
     await delay(5000);
-    return [];
+    dispatch(loadData());
   }
 );
 

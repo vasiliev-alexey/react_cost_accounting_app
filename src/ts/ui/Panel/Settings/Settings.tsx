@@ -1,8 +1,9 @@
-import React, { Component, Dispatch } from 'react';
+import React, { Component } from 'react';
 import { ExtendedNodeData, TreeItem } from 'react-sortable-tree';
-import { Button } from 'react-bootstrap';
+import { Button, Spinner } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { AppDispatch, RootState } from '../../../store/store';
+import { RootState } from '../../../store/store';
+
 import {
   addItem,
   fetchCategory,
@@ -12,18 +13,35 @@ import {
 } from '../../../store/settingsSlice';
 import AddForm from './AddForm';
 import { Tree } from './Tree';
+import { Action, ThunkAction } from '@reduxjs/toolkit';
 
 type PathType = (string | number)[];
 
 interface StateType {
+  isLoading?: boolean;
   selectedItem?: TreeItem;
   selectedPath?: PathType;
   treeData: TreeItem[];
   newCategoryName?: string;
   newCategoryDesc?: string;
 }
-export type DispatchPropsType = typeof mapDispatchToProps &
-  ReturnType<typeof mapStateToProps>;
+
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown, // or some ThunkExtraArgument interface
+  Action<string>
+>;
+
+export type ThunkProps<
+  T extends { [K in keyof T]: (...a: unknown[]) => AppThunk<void> }
+> = {
+  [K in keyof T]: (...args: Parameters<T[K]>) => void;
+};
+
+export type DispatchPropsType = typeof actionProps &
+  ReturnType<typeof mapStateToProps> &
+  ThunkProps<typeof mapDispatchThunkToProps>;
 interface Snapshot {
   counter: number;
 }
@@ -34,19 +52,29 @@ class Settings extends Component<DispatchPropsType, StateType, Snapshot> {
     this.state = {
       treeData: props.treeData,
       selectedItem: null,
+      isLoading: true,
     };
   }
 
   componentDidUpdate(prevProps: Readonly<DispatchPropsType>) {
     if (prevProps.treeData !== this.props.treeData) {
       this.setState({
+        isLoading: false,
         treeData: this.props.treeData,
       });
     }
   }
 
   override componentDidMount(): void {
-    this.props.loadData();
+    // this.props.loadData();
+
+    if (this.state.treeData !== null) {
+      this.setState({ treeData: [] });
+    } else {
+      this.setState({ isLoading: true });
+    }
+
+    this.props.fetchCategory(1);
   }
 
   onChange = (treeData: TreeItem[]): void => {
@@ -90,10 +118,17 @@ class Settings extends Component<DispatchPropsType, StateType, Snapshot> {
   };
 
   render(): React.ReactElement {
-    // const canDrop = ({}) => {
-    //   return false;
-    // };
-    console.log('render:', this.state);
+    if (this.state.isLoading) {
+      return (
+        <>
+          <Spinner animation="grow" size="sm" />
+          <Spinner animation="grow" /> <Spinner animation="grow" size="sm" />
+          <Spinner animation="grow" /> <Spinner animation="grow" size="sm" />
+          <Spinner animation="grow" /> <Spinner animation="grow" size="sm" />
+          <Spinner animation="grow" />
+        </>
+      );
+    }
 
     return (
       <div style={{ height: 300 }}>
@@ -144,16 +179,45 @@ class Settings extends Component<DispatchPropsType, StateType, Snapshot> {
   }
 }
 
-const mapDispatchToProps = {
+// const mapDispatchToPropsSync = {
+//   addItem: addItem,
+//   loadData: loadData,
+//   removeNode: removeNode,
+//   syncState: syncState,
+// };
+
+// const mapDispatchToProps = (dispatch: Dispatch) =>
+//   bindActionCreators(
+//     {
+//       fetchCategory: fetchCategory,
+//
+//       addItem: addItem,
+//       loadData: loadData,
+//       removeNode: removeNode,
+//       syncState: syncState,
+//     },
+//     dispatch
+//   );
+
+const actionProps = {
   addItem: addItem,
   loadData: loadData,
   removeNode: removeNode,
   syncState: syncState,
-  fetchCategory: fetchCategory,
+};
+
+const mapDispatchThunkToProps = {
+  fetchCategory,
 };
 
 const mapStateToProps = (state: RootState) => ({
   treeData: state.setting.treeData,
 });
+//
+// type mapDispatchToProps = typeof mapDispatchToPropsSync &
+//   typeof mapDispatchToPropsAsync;
 
-export default connect(mapStateToProps, mapDispatchToProps)(Settings);
+export default connect(mapStateToProps, {
+  ...actionProps,
+  ...mapDispatchThunkToProps,
+})(Settings);
