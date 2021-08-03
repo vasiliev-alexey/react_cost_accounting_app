@@ -1,74 +1,84 @@
 import React, { ReactElement } from 'react';
-import { Button, Col, Form, Row } from 'react-bootstrap';
+import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
-import { DayModifiers } from 'react-day-picker';
+// import { DayModifiers } from 'react-day-picker';
 import MomentLocaleUtils from 'react-day-picker/moment';
 import DropdownTreeSelect, { TreeNode } from 'react-dropdown-tree-select';
 import 'react-dropdown-tree-select/dist/styles.css';
 import NumberFormat from 'react-number-format';
+import { dayPickerProps } from './constants';
 
-const WEEKDAYS_SHORT = {
-  ru: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
-};
-const MONTHS = {
-  ru: [
-    'Январь',
-    'Февраль',
-    'Март',
-    'Апрель',
-    'Май',
-    'Июнь',
-    'Июль',
-    'Август',
-    'Сентябрь',
-    'Октябрь',
-    'Ноябрь',
-    'Декабрь',
-  ],
-};
+interface CostsStateType {
+  expenseName?: string;
+  expenseDate?: Date;
+  amount?: number;
+  categoryId?: CategoryTuple;
+  data: {};
+  show: boolean;
+}
 
-const WEEKDAYS_LONG = {
-  ru: [
-    'Воскресенье',
-    'Понедельник',
-    'Вторник',
-    'Среда',
-    'Четверг',
-    'Пятница',
-    'Суббота',
-  ],
-};
+interface CategoryTuple {
+  id: string;
+  value: string;
+}
 
-const FIRST_DAY_OF_WEEK = {
-  ru: 1,
-  it: 1,
-};
-// Translate aria-labels
-const LABELS = {
-  ru: { nextMonth: 'следующий месяц', previousMonth: 'предыдущий месяц' },
-};
+export class Costs extends React.Component<{}, CostsStateType> {
+  constructor(props: Readonly<{}> | {}) {
+    super(props);
 
-export type CostsPropsType = {
-  expenseName: string;
-  expenseDate: Date;
-  amount: number;
-  categoryId: string;
-};
-export class Costs extends React.Component<CostsPropsType, {}> {
-  private handleDayChange = (
-    day: Date,
-    dayModifiers: DayModifiers,
-    dayPickerInput: DayPickerInput
-  ): void => {
-    console.log(day, dayModifiers, dayPickerInput);
+    this.state = {
+      expenseName: '',
+      expenseDate: new Date(),
+      amount: 0,
+      categoryId: { id: '', value: '' },
+      show: false,
+      data: {
+        label: 'Транспорт',
+        value: 'asdasd',
+        data: '1111',
+        children: [
+          {
+            label: 'Метро',
+            value: 'Метро',
+            data: '2222',
+          },
+          {
+            label: 'Автобус',
+            value: 'Автобус',
+            data: '3333',
+          },
+        ],
+      },
+    };
+  }
+
+  #selectedCategory: CategoryTuple;
+
+  // shouldComponentUpdate = (nextProps: unknown) => {
+  //   // return nextProps.data !== this.state.data;
+  // };
+
+  #onChangeAmount = (evt: React.ChangeEvent<HTMLInputElement>): void => {
+    this.setState({ amount: parseFloat(evt.currentTarget.value) });
   };
 
-  private onChangeSelect = (
-    currentNode: TreeNode,
-    selectedNodes: TreeNode[]
+  #handleDayChange = (day: Date): void => {
+    this.setState({ expenseDate: day });
+  };
+
+  #onChangeSelect = (
+    currentNode: TreeNode
+    // selectedNodes: TreeNode[]
   ): void => {
-    console.log('onChangeSelect', currentNode, selectedNodes);
+    //  this.setState({ categoryId: currentNode.data });
+    this.#selectedCategory = { id: currentNode.data, value: currentNode.value };
+    console.log(this.state, 'currentNode.data:', currentNode.data);
+    console.log('currentNode', currentNode);
+  };
+
+  #onNameChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {
+    this.setState({ expenseName: evt.currentTarget.value });
   };
 
   private data = {
@@ -79,29 +89,22 @@ export class Costs extends React.Component<CostsPropsType, {}> {
       {
         label: 'Метро',
         value: 'Метро',
+        data: '1111',
       },
       {
         label: 'Автобус',
         value: 'Автобус',
+        data: '1111',
       },
     ],
   };
 
   render(): ReactElement {
+    console.log('render:', this.state);
+
     return (
       <Form>
-        {/*<Row>*/}
-        {/*  <Form.Label column="sm" sm={1}>*/}
-        {/*    Large Text*/}
-        {/*  </Form.Label>*/}
-        {/*  <Col>*/}
-        {/*    <Form.Control size="lg" type="text" placeholder="Large text" />*/}
-        {/*  </Col>*/}
-        {/*</Row>*/}
-
         <Row className="mb-2">
-          {/*<Form.Group className="mb-3" controlId="formName">*/}
-
           <Form.Label column={'sm'} sm={2}>
             Наименование
           </Form.Label>
@@ -110,12 +113,10 @@ export class Costs extends React.Component<CostsPropsType, {}> {
             <Form.Control
               type="text"
               placeholder="Введите наименование расхода"
-              value={this.props.expenseName}
+              value={this.state.expenseName}
+              onChange={this.#onNameChange}
             />
           </Col>
-          {/*<Form.Text className="text-muted">*/}
-          {/*  На что-то же вы потратили деньги*/}
-          {/*</Form.Text>*/}
         </Row>
         <Row className="mb-2">
           <Form.Label column={'sm'} sm={2}>
@@ -123,20 +124,13 @@ export class Costs extends React.Component<CostsPropsType, {}> {
           </Form.Label>
           <Col>
             <DayPickerInput
-              onDayChange={this.handleDayChange}
+              onDayChange={this.#handleDayChange}
               placeholder={'Дата расходов'}
-              format={'MM.DD.YYYY'}
-              value={this.props.expenseDate}
+              format={'DD.MM.YYYY'}
+              value={this.state.expenseDate}
               formatDate={MomentLocaleUtils.formatDate}
               parseDate={MomentLocaleUtils.parseDate}
-              dayPickerProps={{
-                locale: 'ru',
-                months: MONTHS['ru'],
-                weekdaysLong: WEEKDAYS_LONG['ru'],
-                weekdaysShort: WEEKDAYS_SHORT['ru'],
-                firstDayOfWeek: FIRST_DAY_OF_WEEK['ru'],
-                labels: LABELS['ru'],
-              }}
+              dayPickerProps={dayPickerProps}
             />
           </Col>
         </Row>
@@ -145,11 +139,11 @@ export class Costs extends React.Component<CostsPropsType, {}> {
           <Form.Label column={'sm'} sm={2}>
             Сумма расхода
           </Form.Label>
-          {/*<Form.Control type="number" placeholder="Введите сумму расхода" />*/}
           <Col sm={10}>
             <NumberFormat
-              value={this.props.amount}
-              thousandSeparator={' '}
+              value={this.state.amount}
+              // thousandSeparator={' '}
+              onChange={this.#onChangeAmount}
             ></NumberFormat>
           </Col>
         </Row>
@@ -158,15 +152,73 @@ export class Costs extends React.Component<CostsPropsType, {}> {
           <Form.Label column={'sm'} sm={2}>
             Категория
           </Form.Label>
-          <Col sm={10}>
-            <DropdownTreeSelect
-              texts={{ placeholder: 'выбери категорию' }}
-              data={this.data}
-              onChange={this.onChangeSelect}
-              mode="radioSelect"
+
+          <Col sm={7}>
+            <Form.Control
+              type="text"
+              placeholder=""
+              value={this.state.categoryId.value}
+              readOnly={true}
             />
           </Col>
+          {/*<DropdownTreeSelect*/}
+          {/*  texts={{ placeholder: 'выбери категорию' }}*/}
+          {/*  data={this.state.data}*/}
+          {/*  onChange={this.#onChangeSelect}*/}
+          {/*  mode="radioSelect"*/}
+          {/*/>*/}
+          <Col>
+            <Button
+              variant="primary"
+              onClick={() => {
+                this.setState({ show: true });
+              }}
+            >
+              Выбрать категорию
+            </Button>
+          </Col>
         </Row>
+
+        <Modal
+          centered={true}
+          show={this.state.show}
+          onHide={() => {
+            this.setState({ show: false });
+          }}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Modal heading</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <DropdownTreeSelect
+              texts={{ placeholder: 'выбери категорию' }}
+              data={this.state.data}
+              onChange={this.#onChangeSelect}
+              mode="radioSelect"
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                this.setState({ show: false });
+              }}
+            >
+              Close
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => {
+                this.setState({
+                  categoryId: this.#selectedCategory,
+                  show: false,
+                });
+              }}
+            >
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </Modal>
 
         <Button variant="primary" type="submit">
           Сохранить
