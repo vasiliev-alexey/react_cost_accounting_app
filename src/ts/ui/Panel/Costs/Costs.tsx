@@ -2,12 +2,18 @@ import React, { ReactElement } from 'react';
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
-// import { DayModifiers } from 'react-day-picker';
+
 import MomentLocaleUtils from 'react-day-picker/moment';
-import DropdownTreeSelect, { TreeNode } from 'react-dropdown-tree-select';
-import 'react-dropdown-tree-select/dist/styles.css';
+
 import NumberFormat from 'react-number-format';
 import { dayPickerProps } from './constants';
+import { Tree } from '../Settings/Tree';
+import {
+  ExtendedNodeData,
+  getNodeAtPath,
+  TreeItem,
+  TreeNode,
+} from 'react-sortable-tree';
 
 interface CostsStateType {
   expenseName?: string;
@@ -16,6 +22,7 @@ interface CostsStateType {
   categoryId?: CategoryTuple;
   data: {};
   show: boolean;
+  treeData: TreeItem[];
 }
 
 interface CategoryTuple {
@@ -23,8 +30,11 @@ interface CategoryTuple {
   value: string;
 }
 
-export class Costs extends React.Component<{}, CostsStateType> {
-  constructor(props: Readonly<{}> | {}) {
+export class Costs extends React.Component<
+  { treeData: TreeItem[] },
+  CostsStateType
+> {
+  constructor(props: Readonly<{ treeData: TreeItem[] }>) {
     super(props);
 
     this.state = {
@@ -33,6 +43,9 @@ export class Costs extends React.Component<{}, CostsStateType> {
       amount: 0,
       categoryId: { id: '', value: '' },
       show: false,
+
+      treeData: [...props.treeData],
+
       data: {
         label: 'Транспорт',
         value: 'asdasd',
@@ -55,10 +68,6 @@ export class Costs extends React.Component<{}, CostsStateType> {
 
   #selectedCategory: CategoryTuple;
 
-  // shouldComponentUpdate = (nextProps: unknown) => {
-  //   // return nextProps.data !== this.state.data;
-  // };
-
   #onChangeAmount = (evt: React.ChangeEvent<HTMLInputElement>): void => {
     this.setState({ amount: parseFloat(evt.currentTarget.value) });
   };
@@ -68,7 +77,7 @@ export class Costs extends React.Component<{}, CostsStateType> {
   };
 
   #onChangeSelect = (
-    currentNode: TreeNode
+    currentNode: TreeItem
     // selectedNodes: TreeNode[]
   ): void => {
     //  this.setState({ categoryId: currentNode.data });
@@ -79,24 +88,6 @@ export class Costs extends React.Component<{}, CostsStateType> {
 
   #onNameChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {
     this.setState({ expenseName: evt.currentTarget.value });
-  };
-
-  private data = {
-    label: 'Транспорт',
-    value: 'asdasd',
-    data: '1111',
-    children: [
-      {
-        label: 'Метро',
-        value: 'Метро',
-        data: '1111',
-      },
-      {
-        label: 'Автобус',
-        value: 'Автобус',
-        data: '1111',
-      },
-    ],
   };
 
   render(): ReactElement {
@@ -112,6 +103,7 @@ export class Costs extends React.Component<{}, CostsStateType> {
           <Col>
             <Form.Control
               type="text"
+              required
               placeholder="Введите наименование расхода"
               value={this.state.expenseName}
               onChange={this.#onNameChange}
@@ -161,12 +153,7 @@ export class Costs extends React.Component<{}, CostsStateType> {
               readOnly={true}
             />
           </Col>
-          {/*<DropdownTreeSelect*/}
-          {/*  texts={{ placeholder: 'выбери категорию' }}*/}
-          {/*  data={this.state.data}*/}
-          {/*  onChange={this.#onChangeSelect}*/}
-          {/*  mode="radioSelect"*/}
-          {/*/>*/}
+
           <Col>
             <Button
               variant="primary"
@@ -186,15 +173,43 @@ export class Costs extends React.Component<{}, CostsStateType> {
             this.setState({ show: false });
           }}
         >
-          <Modal.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Header>
+            <Modal.Title>Выбор категории</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <DropdownTreeSelect
-              texts={{ placeholder: 'выбери категорию' }}
-              data={this.state.data}
-              onChange={this.#onChangeSelect}
-              mode="radioSelect"
+            <Tree
+              treeData={this.state.treeData}
+              onChange={(treeData: TreeItem[]) => {
+                this.setState({ treeData });
+              }}
+              removeNode={(rowInfo: ExtendedNodeData) => {
+                const node: TreeNode = getNodeAtPath({
+                  treeData: this.state.treeData,
+                  path: rowInfo.path, // You can use path from here
+                  getNodeKey: ({ node: { id } }) => id,
+                  ignoreCollapsed: true,
+                });
+                // this.setState({
+                //   categoryId: {
+                //     id: node.node.id,
+                //     value: node.node.title.toString(),
+                //   },
+                // });
+
+                this.#selectedCategory = {
+                  id: node.node.id,
+                  value: node.node.title.toString(),
+                };
+
+                console.log('node', node.node.id);
+              }}
+              onNodeClick={() => {
+                console.log(1);
+              }}
+              buttonText="&#9734;"
+              // onChange={this.onChange}
+              // removeNode={this.removeNode}
+              // onNodeClick={this.onNodeClick}
             />
           </Modal.Body>
           <Modal.Footer>
@@ -204,18 +219,19 @@ export class Costs extends React.Component<{}, CostsStateType> {
                 this.setState({ show: false });
               }}
             >
-              Close
+              Отмена
             </Button>
             <Button
               variant="primary"
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
                 this.setState({
                   categoryId: this.#selectedCategory,
                   show: false,
                 });
               }}
             >
-              Save Changes
+              Выбрать
             </Button>
           </Modal.Footer>
         </Modal>

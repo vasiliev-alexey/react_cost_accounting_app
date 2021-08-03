@@ -15,7 +15,7 @@ export const fetchCategory = createAsyncThunk(
   async (f: number, { dispatch }) => {
     console.log('fetchCategory', f);
     dispatch({ type: 'ss' });
-    await delay(5000);
+    await delay(500);
     dispatch(loadData());
   }
 );

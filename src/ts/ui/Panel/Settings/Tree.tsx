@@ -5,6 +5,7 @@ import { Button } from 'react-bootstrap';
 export class Tree extends Component<
   {
     treeData: TreeItem[];
+    buttonText: string;
     onChange: (treeData: TreeItem[]) => void;
     removeNode: (rowInf: ExtendedNodeData) => void;
     onNodeClick: (rowInf: ExtendedNodeData) => void;
@@ -24,17 +25,26 @@ export class Tree extends Component<
         // Need to set getNodeKey to get meaningful ids in paths
         getNodeKey={({ node }) => node.id}
         onChange={onChange}
-        generateNodeProps={(rowInf) => ({
-          onClick: () => {
-            onNodeClick(rowInf);
-          },
+        generateNodeProps={(rowInf) => {
+          const nodeProps = {
+            onClick: () => {
+              onNodeClick(rowInf);
+            },
 
-          buttons: [
-            <Button key={`removeNode-key`} onClick={() => removeNode(rowInf)}>
-              &#10006;
-            </Button>,
-          ],
-        })}
+            buttons: [
+              <Button
+                key={`removeNode-key`}
+                onClick={() => removeNode(rowInf)}
+                variant="info"
+              >
+                {/*&#10006;*/}
+                {this.props.buttonText}
+              </Button>,
+            ],
+          };
+
+          return nodeProps;
+        }}
       />
     );
   }

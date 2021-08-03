@@ -13,6 +13,7 @@ const Template: Story<{
   onChange: (treeData: TreeItem[]) => void;
   removeNode: (rowInf: ExtendedNodeData) => void;
   onNodeClick: (rowInf: ExtendedNodeData) => void;
+  buttonText: '';
 }> = (args) => <Tree {...args} />;
 
 export const tree = Template.bind({});

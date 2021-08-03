@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ExtendedNodeData, TreeItem } from 'react-sortable-tree';
-import { Button, Spinner } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { RootState } from '../../../store/store';
 
@@ -13,7 +13,8 @@ import {
 } from '../../../store/settingsSlice';
 import AddForm from './AddForm';
 import { Tree } from './Tree';
-import { Action, ThunkAction } from '@reduxjs/toolkit';
+import { ThunkProps } from '../../utils';
+import Preloader from '../Preloader';
 
 type PathType = (string | number)[];
 
@@ -25,19 +26,6 @@ interface StateType {
   newCategoryName?: string;
   newCategoryDesc?: string;
 }
-
-export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  RootState,
-  unknown, // or some ThunkExtraArgument interface
-  Action<string>
->;
-
-export type ThunkProps<
-  T extends { [K in keyof T]: (...a: unknown[]) => AppThunk<void> }
-> = {
-  [K in keyof T]: (...args: Parameters<T[K]>) => void;
-};
 
 export type DispatchPropsType = typeof actionProps &
   ReturnType<typeof mapStateToProps> &
@@ -119,15 +107,7 @@ class Settings extends Component<DispatchPropsType, StateType, Snapshot> {
 
   render(): React.ReactElement {
     if (this.state.isLoading) {
-      return (
-        <>
-          <Spinner animation="grow" size="sm" />
-          <Spinner animation="grow" /> <Spinner animation="grow" size="sm" />
-          <Spinner animation="grow" /> <Spinner animation="grow" size="sm" />
-          <Spinner animation="grow" /> <Spinner animation="grow" size="sm" />
-          <Spinner animation="grow" />
-        </>
-      );
+      return <Preloader />;
     }
 
     return (
@@ -163,6 +143,7 @@ class Settings extends Component<DispatchPropsType, StateType, Snapshot> {
           onChange={this.onChange}
           removeNode={this.removeNode}
           onNodeClick={this.onNodeClick}
+          buttonText="&#10060;"
         />
 
         <AddForm
