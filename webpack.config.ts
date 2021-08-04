@@ -5,6 +5,9 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
 
+const Dotenv = require('dotenv-webpack');
+require('dotenv').config();
+
 const webpackConfig = (env: {
   production: boolean;
   development: boolean;
@@ -60,10 +63,15 @@ const webpackConfig = (env: {
     new HtmlWebpackPlugin({
       template: './src/html/index.html',
     }),
+    new Dotenv(),
     new webpack.DefinePlugin({
       'process.env.PRODUCTION': env.production || !env.development,
       'process.env.NAME': JSON.stringify(require('./package.json').name),
       'process.env.VERSION': JSON.stringify(require('./package.json').version),
+      'process.env.REACT_APP_API_KEY': JSON.stringify(
+        process.env.REACT_APP_API_KEY
+      ),
+      NODE_ENV: JSON.stringify(process.env.NODE_ENV),
     }),
     new ForkTsCheckerWebpackPlugin({
       eslint: {
