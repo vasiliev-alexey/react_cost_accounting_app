@@ -6,7 +6,7 @@ import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
 
 const Dotenv = require('dotenv-webpack');
-require('dotenv').config();
+//require('dotenv').config();
 
 const webpackConfig = (env: {
   production: boolean;
@@ -68,11 +68,8 @@ const webpackConfig = (env: {
       'process.env.PRODUCTION': env.production || !env.development,
       'process.env.NAME': JSON.stringify(require('./package.json').name),
       'process.env.VERSION': JSON.stringify(require('./package.json').version),
-      'process.env.REACT_APP_API_KEY': JSON.stringify(
-        process.env.REACT_APP_API_KEY
-      ),
-      NODE_ENV: JSON.stringify(process.env.NODE_ENV),
     }),
+
     new ForkTsCheckerWebpackPlugin({
       eslint: {
         files: './src/**/*.{ts,tsx,js,jsx}', // required - same as command `eslint ./src/**/*.{ts,tsx,js,jsx} --ext .ts,.tsx,.js,.jsx`

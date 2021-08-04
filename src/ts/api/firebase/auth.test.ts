@@ -1,12 +1,14 @@
 import { doSignInWithEmailAndPassword } from './auth';
 
-describe('test auth', () => {
-  console.log('sss');
-  test('', () => {
-    doSignInWithEmailAndPassword('', '').then((u) => {
-      console.log(u.user.email);
-    });
+import { config } from 'dotenv';
 
-    expect(1).toBe(1);
+describe('test auth', () => {
+  beforeAll(() => {
+    config();
+  });
+
+  test('test doSignInWithEmailAndPassword', async () => {
+    const x = await doSignInWithEmailAndPassword('av@auth.me', '11111111');
+    expect(x.user.uid).toBe('HoZR2hJVo4hzMc0Q6RtHizuwsRF3');
   });
 });

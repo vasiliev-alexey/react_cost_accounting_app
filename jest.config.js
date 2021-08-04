@@ -16,7 +16,7 @@ module.exports = {
       statements: 60,
     },
   },
-
+  setupFiles: ['dotenv/config'],
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$',
   globals: {
     'ts-jest': {

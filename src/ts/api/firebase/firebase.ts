@@ -18,8 +18,5 @@ if (!firebase.apps.length) {
   firebase.initializeApp(config);
 }
 
-console.log('process.env.REACT_APP_API_KEY', process.env.REACT_APP_API_KEY);
-console.log(NODE_ENV); // development
-
 export const auth = firebase.auth();
 export const db = firebase.database();
