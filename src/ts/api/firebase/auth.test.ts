@@ -1,5 +1,4 @@
 import { doSignInWithEmailAndPassword } from './auth';
-
 import { config } from 'dotenv';
 
 describe('test auth', () => {
