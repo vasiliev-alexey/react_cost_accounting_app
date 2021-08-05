@@ -3,7 +3,7 @@ import { Costs } from './Costs';
 import { ThunkProps } from '../../utils';
 import { RootState } from '../../../store/store';
 import { connect } from 'react-redux';
-import { fetchCategory } from '../../../store/settingsSlice';
+import { fetchUserCategory } from '../../../store/settingsSlice';
 import { TreeItem } from 'react-sortable-tree';
 import Preloader from '../Preloader';
 
@@ -34,7 +34,7 @@ class CostsContainer extends Component<DispatchPropsType, StateType> {
       this.setState({ isLoading: true });
     }
 
-    this.props.fetchCategory(1);
+    this.props.fetchCategory(this.props.userId);
   }
 
   override componentDidUpdate(prevProps: Readonly<DispatchPropsType>) {
@@ -62,11 +62,12 @@ class CostsContainer extends Component<DispatchPropsType, StateType> {
 const actionProps = {};
 
 const mapDispatchThunkToProps = {
-  fetchCategory,
+  fetchCategory: fetchUserCategory,
 };
 
 const mapStateToProps = (state: RootState) => ({
   treeData: state.setting.treeData,
+  userId: state.auth.userId,
 });
 
 export default connect(mapStateToProps, {
