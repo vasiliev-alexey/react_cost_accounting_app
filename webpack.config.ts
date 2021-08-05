@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import path from 'path';
-import webpack, { Configuration } from 'webpack';
+import { Configuration } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
+import * as webpack from 'webpack';
 
 const Dotenv = require('dotenv-webpack');
 //require('dotenv').config();
@@ -63,7 +64,10 @@ const webpackConfig = (env: {
     new HtmlWebpackPlugin({
       template: './src/html/index.html',
     }),
-    new Dotenv(),
+    new Dotenv({
+      path: './.env', // Path to .env file (this is the default)
+      safe: true, // load .env.example (defaults to "false" which does not use dotenv-safe)
+    }),
     new webpack.DefinePlugin({
       'process.env.PRODUCTION': env.production || !env.development,
       'process.env.NAME': JSON.stringify(require('./package.json').name),

@@ -6,17 +6,22 @@ import {
   TreeNode,
 } from 'react-sortable-tree';
 import { nanoid } from 'nanoid';
+import { getUserCategory } from '../api/firebase/db';
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+//const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export const fetchCategory = createAsyncThunk(
-  'users/fetchById',
+export const fetchUserCategory = createAsyncThunk(
+  'fetchUserCategory',
   // if you type your function argument here
-  async (f: number, { dispatch }) => {
-    console.log('fetchCategory', f);
-    dispatch({ type: 'ss' });
-    await delay(500);
-    dispatch(loadData());
+  async (userId: string, {}) => {
+    const data = await getUserCategory(userId);
+
+    console.log('fetchCategory = data', data);
+
+    return data;
+
+    //await delay(500);
+    //dispatch(loadData([]));
   }
 );
 
@@ -26,6 +31,7 @@ const settingSlice = createSlice({
   initialState: {
     treeData: [],
     selectedItem: null,
+    isLoaded: false,
   },
   reducers: {
     addItem: (state, action) => {
@@ -70,47 +76,53 @@ const settingSlice = createSlice({
       });
     },
 
-    loadData: (state) => {
-      console.log('loadData state', state);
-      state.treeData = [
-        {
-          id: 'trap',
-          title: 'Транспорт',
-          subtitle: 'Регулярные поездки',
-          children: [
-            { id: 'trapped', title: 'Метро', children: [] },
-            { id: 'bus', title: 'Автобус', children: [] },
-          ],
-        },
-        {
-          id: 'no-grandkids',
-          title: 'Еда',
-          subtitle: 'Затраты на еду, в тч рестораны',
-          children: [{ id: 'dasdasd', title: 'Завтраки в кафе', children: [] }],
-        },
-        {
-          id: 'twin-1',
-          title: 'Twin #1',
-          subtitle: "Doesn't play with other twin",
-          children: [],
-        },
-        {
-          id: 'twin-2',
-          title: 'Twin #2',
-          subtitle: "Doesn't play with other twin",
-          children: [],
-        },
-      ];
+    loadData: (state, action) => {
+      console.log('loadData state', state, action);
+
+      const treeData = action.payload.treData;
+      state.treeData = treeData;
+      // state.treeData = [
+      //   {
+      //     id: 'trap',
+      //     title: 'Транспорт',
+      //     subtitle: 'Регулярные поездки',
+      //     children: [
+      //       { id: 'trapped', title: 'Метро', children: [] },
+      //       { id: 'bus', title: 'Автобус', children: [] },
+      //     ],
+      //   },
+      //   {
+      //     id: 'no-grandkids',
+      //     title: 'Еда',
+      //     subtitle: 'Затраты на еду, в тч рестораны',
+      //     children: [{ id: 'dasdasd', title: 'Завтраки в кафе', children: [] }],
+      //   },
+      //   {
+      //     id: 'twin-1',
+      //     title: 'Twin #1',
+      //     subtitle: "Doesn't play with other twin",
+      //     children: [],
+      //   },
+      //   {
+      //     id: 'twin-2',
+      //     title: 'Twin #2',
+      //     subtitle: "Doesn't play with other twin",
+      //     children: [],
+      //   },
+      // ];
       state.selectedItem = null;
     },
   },
 
   extraReducers: (builder) => {
-    builder.addCase(fetchCategory.pending, (state, action) => {
+    builder.addCase(fetchUserCategory.pending, (state, action) => {
       console.log('aaa: pending', action.payload);
     });
-    builder.addCase(fetchCategory.fulfilled, (state, action) => {
-      console.log('aaa: fulfilled:', action.payload);
+    builder.addCase(fetchUserCategory.fulfilled, (state, action) => {
+      console.log('resolved with:', action);
+
+      state.treeData = action.payload;
+      state.isLoaded = true;
     });
   },
 });

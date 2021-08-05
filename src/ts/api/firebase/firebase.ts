@@ -1,7 +1,6 @@
 import firebase from 'firebase';
 import 'firebase/auth';
 import 'firebase/firestore';
-const envVariables = process.env;
 
 const config = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -11,7 +10,7 @@ const config = {
   storageBucket: process.env.REACT_APP_STORAGEBUCKET,
   messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
   appId: process.env.REACT_APP_APP_ID,
-  measurementId: process.env.REACT_APP_MEASUREMENT_ID,
+  // measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 };
 
 firebase.initializeApp(config);

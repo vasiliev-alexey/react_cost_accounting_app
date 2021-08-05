@@ -6,7 +6,7 @@ import { RootState } from '../../../store/store';
 
 import {
   addItem,
-  fetchCategory,
+  fetchUserCategory,
   loadData,
   removeNode,
   syncState,
@@ -62,7 +62,7 @@ class Settings extends Component<DispatchPropsType, StateType, Snapshot> {
       this.setState({ isLoading: true });
     }
 
-    this.props.fetchCategory(1);
+    this.props.fetchCategory(this.props.userId);
   }
 
   onChange = (treeData: TreeItem[]): void => {
@@ -106,7 +106,7 @@ class Settings extends Component<DispatchPropsType, StateType, Snapshot> {
   };
 
   render(): React.ReactElement {
-    if (this.state.isLoading) {
+    if (!this.props.isLoading) {
       return <Preloader />;
     }
 
@@ -188,11 +188,13 @@ const actionProps = {
 };
 
 const mapDispatchThunkToProps = {
-  fetchCategory,
+  fetchCategory: fetchUserCategory,
 };
 
 const mapStateToProps = (state: RootState) => ({
   treeData: state.setting.treeData,
+  isLoading: state.setting.isLoaded,
+  userId: state.auth.userId,
 });
 //
 // type mapDispatchToProps = typeof mapDispatchToPropsSync &
