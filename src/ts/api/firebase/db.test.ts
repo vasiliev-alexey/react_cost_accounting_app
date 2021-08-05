@@ -6,9 +6,15 @@ describe('test db functions', () => {
     config();
   });
 
-  test('test getUserData', () => {
-    const x = getUserData();
-    console.log('xxx', x);
+  test('test getUserData', async () => {
+    const x = await getUserData();
+
+    //await new Promise((r) => setTimeout(r, 2000));
+    for (let i in x.docs) {
+      const doc = x.docs[i].data();
+      console.log(doc);
+      // Check for your document data here and break when you find it
+    }
   });
   //
   // test('test setUserData', async () => {
