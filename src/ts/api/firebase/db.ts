@@ -21,11 +21,16 @@ import { TreeItem } from 'react-sortable-tree';
 export const setUserCategory = async (
   userId: string,
   categoryTree: { categoryTree: TreeItem[] }
-): Promise<void> => {
+): Promise<TreeItem[]> => {
   console.log('wwwwwwwwwwwwwwwwwwww');
 
-  await db.collection('category').doc(userId).set(categoryTree);
+  await db
+    .collection('category')
+    .doc(userId)
+    .set(categoryTree, { merge: true });
   console.log('eeeeeeeeeeeeeee');
+
+  return categoryTree.categoryTree;
 };
 
 export const getUserCategory = async (userId: string): Promise<TreeItem[]> => {

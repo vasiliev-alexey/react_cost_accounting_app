@@ -63,10 +63,11 @@ const webpackConfig = (env: {
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/html/index.html',
+      favicon: './src/img/cost.png',
     }),
     new Dotenv({
-      path: './.env', // Path to .env file (this is the default)
-      safe: true, // load .env.example (defaults to "false" which does not use dotenv-safe)
+      safe: true,
+      path: path.resolve(__dirname, '.env'),
     }),
     new webpack.DefinePlugin({
       'process.env.PRODUCTION': env.production || !env.development,

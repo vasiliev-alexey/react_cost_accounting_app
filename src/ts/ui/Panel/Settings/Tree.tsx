@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import SortableTree, { ExtendedNodeData, TreeItem } from 'react-sortable-tree';
+import { ExtendedNodeData, TreeItem } from 'react-sortable-tree';
 import { Button } from 'react-bootstrap';
+import SortableTree from 'react-sortable-tree';
+
+//https://github.com/frontend-collective/react-sortable-tree/issues/177
 
 export class Tree extends Component<
   {

@@ -6,24 +6,29 @@ import {
   TreeNode,
 } from 'react-sortable-tree';
 import { nanoid } from 'nanoid';
-import { getUserCategory } from '../api/firebase/db';
+import { getUserCategory, setUserCategory } from '../api/firebase/db';
 
 //const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export const fetchUserCategory = createAsyncThunk(
+export const fetchUserCategory = createAsyncThunk<TreeItem[], string>(
   'fetchUserCategory',
-  // if you type your function argument here
-  async (userId: string, {}) => {
+  async (userId) => {
     const data = await getUserCategory(userId);
-
-    console.log('fetchCategory = data', data);
-
+    console.log('data : ', data);
     return data;
-
-    //await delay(500);
-    //dispatch(loadData([]));
   }
 );
+
+export const saveUserCategories = createAsyncThunk<
+  TreeItem[],
+  { userId: string; categoryTree: TreeItem[] }
+>('saveUserCategories', async ({ userId, categoryTree }, {}) => {
+  console.log('saveUserCategories -> ', userId, { categoryTree });
+
+  const data = await setUserCategory(userId, { categoryTree });
+  console.log('data : ', data);
+  return data;
+});
 
 // basic example slice copied from the docs
 const settingSlice = createSlice({
@@ -81,46 +86,23 @@ const settingSlice = createSlice({
 
       const treeData = action.payload.treData;
       state.treeData = treeData;
-      // state.treeData = [
-      //   {
-      //     id: 'trap',
-      //     title: 'Транспорт',
-      //     subtitle: 'Регулярные поездки',
-      //     children: [
-      //       { id: 'trapped', title: 'Метро', children: [] },
-      //       { id: 'bus', title: 'Автобус', children: [] },
-      //     ],
-      //   },
-      //   {
-      //     id: 'no-grandkids',
-      //     title: 'Еда',
-      //     subtitle: 'Затраты на еду, в тч рестораны',
-      //     children: [{ id: 'dasdasd', title: 'Завтраки в кафе', children: [] }],
-      //   },
-      //   {
-      //     id: 'twin-1',
-      //     title: 'Twin #1',
-      //     subtitle: "Doesn't play with other twin",
-      //     children: [],
-      //   },
-      //   {
-      //     id: 'twin-2',
-      //     title: 'Twin #2',
-      //     subtitle: "Doesn't play with other twin",
-      //     children: [],
-      //   },
-      // ];
       state.selectedItem = null;
     },
   },
 
   extraReducers: (builder) => {
-    builder.addCase(fetchUserCategory.pending, (state, action) => {
-      console.log('aaa: pending', action.payload);
+    builder.addCase(fetchUserCategory.pending, (state) => {
+      state.isLoaded = false;
     });
     builder.addCase(fetchUserCategory.fulfilled, (state, action) => {
-      console.log('resolved with:', action);
+      state.treeData = action.payload;
+      state.isLoaded = true;
+    });
 
+    builder.addCase(saveUserCategories.pending, (state) => {
+      state.isLoaded = false;
+    });
+    builder.addCase(saveUserCategories.fulfilled, (state, action) => {
       state.treeData = action.payload;
       state.isLoaded = true;
     });
