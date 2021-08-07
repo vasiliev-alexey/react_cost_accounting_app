@@ -29,7 +29,22 @@ const clone = (items: TreeItem[]): TreeItem[] =>
   items.map((item: TreeItem) =>
     Array.isArray(item)
       ? clone(item)
-      : { ...item, children: clone(item.children as TreeItem[]) }
+      : {
+          ...item,
+
+          children: clone(item.children as TreeItem[]),
+        }
+  );
+
+const removeExpanded = (items: TreeItem[]): TreeItem[] =>
+  items.map((item: TreeItem) =>
+    Array.isArray(item)
+      ? removeExpanded(item)
+      : {
+          ...item,
+          expanded: false,
+          children: removeExpanded(item.children as TreeItem[]),
+        }
   );
 
 interface StateType {
@@ -82,10 +97,6 @@ class Settings extends Component<DispatchPropsType, StateType> {
     this.props.syncState(treeData);
   };
 
-  doSomething = (rowInf: unknown): void => {
-    console.log('qq', JSON.stringify(rowInf));
-  };
-
   removeNode = (rowInfo: ExtendedNodeData): void => {
     const { path } = rowInfo;
     this.props.removeNode(path);
@@ -128,9 +139,10 @@ class Settings extends Component<DispatchPropsType, StateType> {
       node.node.expanded = true;
     }
     console.log('categoryTree', data);
+
     await this.props.saveCategoryTree({
       userId: this.props.userId,
-      categoryTree: data,
+      categoryTree: removeExpanded(data),
     });
     console.log('categoryTree2222', this.state.treeData);
     // this.props.addItem({
