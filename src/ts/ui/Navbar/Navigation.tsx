@@ -38,6 +38,11 @@ export class Navigation extends React.Component<{}, {}> {
             <Nav.Link>Просмотр Задания</Nav.Link>
           </LinkContainer>
         </Nav.Item>
+        <Nav.Item>
+          <LinkContainer to="/taskList">
+            <Nav.Link>Задачи</Nav.Link>
+          </LinkContainer>
+        </Nav.Item>
       </Nav>
     );
   }

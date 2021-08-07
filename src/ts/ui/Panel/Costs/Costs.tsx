@@ -14,13 +14,13 @@ import {
   TreeItem,
   TreeNode,
 } from 'react-sortable-tree';
+import { ExpenseType } from '../../../types/domain';
 
 interface CostsStateType {
   expenseName?: string;
   expenseDate?: Date;
   amount?: number;
   categoryId?: CategoryTuple;
-  data: {};
   show: boolean;
   treeData: TreeItem[];
 }
@@ -30,11 +30,15 @@ interface CategoryTuple {
   value: string;
 }
 
-export class Costs extends React.Component<
-  { treeData: TreeItem[] },
-  CostsStateType
-> {
-  constructor(props: Readonly<{ treeData: TreeItem[] }>) {
+interface propsType {
+  treeData: TreeItem[];
+  isCostSaved: boolean;
+  userId: string;
+  saveUserExpense: (arg: { userId: string; expense: ExpenseType }) => void;
+}
+
+export class Costs extends React.Component<propsType, CostsStateType> {
+  constructor(props: Readonly<propsType>) {
     super(props);
 
     this.state = {
@@ -43,26 +47,7 @@ export class Costs extends React.Component<
       amount: 0,
       categoryId: { id: '', value: '' },
       show: false,
-
       treeData: [...props.treeData],
-
-      data: {
-        label: 'Транспорт',
-        value: 'asdasd',
-        data: '1111',
-        children: [
-          {
-            label: 'Метро',
-            value: 'Метро',
-            data: '2222',
-          },
-          {
-            label: 'Автобус',
-            value: 'Автобус',
-            data: '3333',
-          },
-        ],
-      },
     };
   }
 
@@ -70,6 +55,19 @@ export class Costs extends React.Component<
 
   #onChangeAmount = (evt: React.ChangeEvent<HTMLInputElement>): void => {
     this.setState({ amount: parseFloat(evt.currentTarget.value) });
+  };
+
+  #saveExpense = (event: React.FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
+    this.props.saveUserExpense({
+      userId: this.props.userId,
+      expense: {
+        categoryId: this.state.categoryId.id,
+        description: this.state.expenseName,
+        expenseDate: this.state.expenseDate,
+        amount: this.state.amount,
+      },
+    });
   };
 
   #handleDayChange = (day: Date): void => {
@@ -94,7 +92,7 @@ export class Costs extends React.Component<
     console.log('render:', this.state);
 
     return (
-      <Form>
+      <Form onSubmit={this.#saveExpense}>
         <Row className="mb-2">
           <Form.Label column={'sm'} sm={2}>
             Наименование
@@ -107,6 +105,7 @@ export class Costs extends React.Component<
               placeholder="Введите наименование расхода"
               value={this.state.expenseName}
               onChange={this.#onNameChange}
+              readOnly={this.props.isCostSaved}
             />
           </Col>
         </Row>
@@ -123,6 +122,7 @@ export class Costs extends React.Component<
               formatDate={MomentLocaleUtils.formatDate}
               parseDate={MomentLocaleUtils.parseDate}
               dayPickerProps={dayPickerProps}
+              inputProps={{ disabled: this.props.isCostSaved }}
             />
           </Col>
         </Row>
@@ -136,6 +136,8 @@ export class Costs extends React.Component<
               value={this.state.amount}
               // thousandSeparator={' '}
               onChange={this.#onChangeAmount}
+              readOnly={this.props.isCostSaved}
+              disabled={this.props.isCostSaved}
             ></NumberFormat>
           </Col>
         </Row>
@@ -160,6 +162,7 @@ export class Costs extends React.Component<
               onClick={() => {
                 this.setState({ show: true });
               }}
+              disabled={this.props.isCostSaved}
             >
               Выбрать категорию
             </Button>
@@ -189,6 +192,7 @@ export class Costs extends React.Component<
                   getNodeKey: ({ node: { id } }) => id,
                   ignoreCollapsed: true,
                 });
+
                 // this.setState({
                 //   categoryId: {
                 //     id: node.node.id,
@@ -236,8 +240,11 @@ export class Costs extends React.Component<
           </Modal.Footer>
         </Modal>
 
-        <Button variant="primary" type="submit">
-          Сохранить
+        <Button
+          variant={this.props.isCostSaved ? 'light' : 'primary'}
+          type="submit"
+        >
+          {this.props.isCostSaved ? 'Сохранено' : 'Сохранить'}
         </Button>
       </Form>
     );

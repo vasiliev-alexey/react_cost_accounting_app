@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import counterReducer from './authSlice';
 import settingReducer from './settingsSlice';
 import authReducer from './authSlice';
+import costReducer from './costSlice';
 // const reducer = combineReducers({
 //   counter: counterReducer,
 // });
@@ -12,6 +13,7 @@ export const store = configureStore({
     counter: counterReducer,
     setting: settingReducer,
     auth: authReducer,
+    cost: costReducer,
   },
 });
 

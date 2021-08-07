@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { fetchUserCategory } from '../../../store/settingsSlice';
 import { TreeItem } from 'react-sortable-tree';
 import Preloader from '../Preloader';
+import { resetCost, saveUserExpense } from '../../../store/costSlice';
 
 interface StateType {
   treeData: TreeItem[];
@@ -35,6 +36,7 @@ class CostsContainer extends Component<DispatchPropsType, StateType> {
     }
 
     this.props.fetchCategory(this.props.userId);
+    this.props.resetCost();
   }
 
   override componentDidUpdate(prevProps: Readonly<DispatchPropsType>) {
@@ -53,21 +55,30 @@ class CostsContainer extends Component<DispatchPropsType, StateType> {
 
     return (
       <>
-        <Costs treeData={this.state.treeData} />
+        <Costs
+          treeData={this.state.treeData}
+          userId={this.props.userId}
+          saveUserExpense={this.props.saveUserExpense}
+          isCostSaved={this.props.isCostSaved}
+        />
       </>
     );
   }
 }
 
-const actionProps = {};
+const actionProps = {
+  resetCost: resetCost,
+};
 
 const mapDispatchThunkToProps = {
   fetchCategory: fetchUserCategory,
+  saveUserExpense: saveUserExpense,
 };
 
 const mapStateToProps = (state: RootState) => ({
   treeData: state.setting.treeData,
   userId: state.auth.userId,
+  isCostSaved: state.cost.expenseSaved,
 });
 
 export default connect(mapStateToProps, {

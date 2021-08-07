@@ -6,6 +6,7 @@ import Settings from './Panel/Settings/Settings';
 import { Statistics } from './Panel/Statistics/Statistics';
 import CostsContainer from './Panel/Costs/CostsContainer';
 import Login from './Login/Login';
+import TaskList from './Panel/Task/TaskList';
 
 const Routes = (): React.ReactElement => (
   <Switch>
@@ -16,6 +17,7 @@ const Routes = (): React.ReactElement => (
       <Route path="/costs" component={CostsContainer} />
       <Route path="/statistics" component={Statistics} />
       <Route path="/sign-in" component={Login} />
+      <Route path="/taskList" component={TaskList} />
     </Switch>
   </Switch>
 );

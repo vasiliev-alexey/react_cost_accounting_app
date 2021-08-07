@@ -3,31 +3,16 @@ import {
   getUserCategory,
   //getUserData,
   setUserCategory,
+  setUserExpense,
   //setUserData,
 } from './db';
+import { ExpenseType } from '../../types/domain';
+import { nanoid } from 'nanoid';
 
 describe('test db functions', () => {
   beforeAll(() => {
     config();
   });
-
-  // test('test getUserData', async () => {
-  //   const x = await getUserData();
-
-  //await new Promise((r) => setTimeout(r, 2000));
-  // for (const i in x.docs) {
-  //   const doc = x.docs[i].data();
-  //   console.log(doc);
-  // Check for your document data here and break when you find it
-  //  }
-  //});
-  //
-  // test('test setUserData', async () => {
-  //   console.log('1111');
-  //   const x = await setUserData({ a: 'ssss' });
-  //   console.log('22222');
-  //   console.log(x);
-  // });
 
   test('test setUserCategoryTree', async () => {
     console.log('1111');
@@ -68,6 +53,19 @@ describe('test db functions', () => {
 
   test('test getUserCategory', async () => {
     const x = await getUserCategory('11111');
+
+    console.log(x);
+  });
+
+  test('test saveExpense', async () => {
+    const data: ExpenseType = {
+      categoryId: nanoid(12),
+      expenseDate: new Date(Date.now()),
+      amount: Math.round(Math.random() * 1000),
+      description: 'test  expense for save',
+    };
+
+    const x = setUserExpense('11111', data);
 
     console.log(x);
   });
