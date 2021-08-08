@@ -2,28 +2,10 @@ import React, { ReactElement } from 'react';
 import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
 
-const task = `- [x] Сделать страницу аутентификации
-- [x] Сделать слайс с аутенификацией
-- [x] Сделать редьюсер сохранения категории
-- [ ] Сделать HOC для аутентификации
-- [x] Сделать редьюсер для сохранения затрат
-- [ ] Сделать страницу с таблицей затрат по дням
-- [ ] Сделать Страницу Register
-- [ ] Сделать SignOut
-- [ ] Сделать метод удаления категории
-- [ ] Обработка ошибок в аутентификации
-- [ ] Обработка ошибок в сохранении категорий
-- [x] Сделать заготовку для отображения параметров поиска
-- [x] Сделать заготовку для отображения расходов таблицей
-- [ ] Развернуть на GHP
-- [x] Сделать список с микротасками
-- [ ] Разработать метод получения расходов
-- [ ] Разработать обновление имени категории для расхода
-
-`;
+import fileMd from '../../../../../doc/todo.md';
 
 function TaskList(): ReactElement {
-  return <ReactMarkdown remarkPlugins={[gfm]}>{task}</ReactMarkdown>;
+  return <ReactMarkdown remarkPlugins={[gfm]}>{fileMd}</ReactMarkdown>;
 }
 
 export default TaskList;

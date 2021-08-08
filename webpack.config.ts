@@ -57,6 +57,11 @@ const webpackConfig = (env: {
       },
 
       {
+        test: /\.md$/i,
+        use: 'raw-loader',
+      },
+
+      {
         test: /\.png/,
         use: {
           loader: 'url-loader',

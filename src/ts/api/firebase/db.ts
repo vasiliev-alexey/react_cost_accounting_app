@@ -42,12 +42,25 @@ export const getUserExpenseList = async (
   userId: string,
   beginDate: Date,
   endDate: Date
-): Promise<unknown> => {
+): Promise<ExpenseType[]> => {
   const doc = db
     .collection(EXPENSE_COLLECTION)
     .doc(userId)
     .collection('expenses');
   let query = doc.where('expenseDate', '>=', beginDate);
   query = query.where('expenseDate', '<=', endDate);
-  return await query.orderBy('expenseDate').get();
+  const snapData = query.orderBy('expenseDate').get();
+
+  const x = await snapData;
+
+  console.log('getUserExpenseList:', endDate);
+
+  const rez = x.docs.map((exp) => {
+    return {
+      ...exp.data(),
+      expenseDate: exp.data().expenseDate.toDate(),
+    } as ExpenseType;
+  });
+
+  return rez;
 };

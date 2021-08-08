@@ -1,6 +1,7 @@
 import { config } from 'dotenv';
 import {
   getUserCategory,
+  getUserExpenseList,
   //getUserData,
   setUserCategory,
   setUserExpense,
@@ -56,7 +57,9 @@ describe('test db functions', () => {
 
     console.log(x);
   });
+});
 
+describe('test for expense', () => {
   test('test saveExpense', async () => {
     const data: ExpenseType = {
       categoryId: nanoid(12),
@@ -67,6 +70,15 @@ describe('test db functions', () => {
 
     const x = setUserExpense('11111', data);
 
+    console.log(x);
+  });
+
+  test('test get  expense', async () => {
+    const x = await getUserExpenseList(
+      'HoZR2hJVo4hzMc0Q6RtHizuwsRF3',
+      new Date('2021-08-01'),
+      new Date('2021-09-01')
+    );
     console.log(x);
   });
 });

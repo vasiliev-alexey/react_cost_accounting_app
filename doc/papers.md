@@ -7,3 +7,5 @@
 https://blog.logrocket.com/using-firebase-emulator-suite-and-react-for-local-first-development/
 
 https://github.com/damirpristav/react-ts-redux-firebase-authentication
+
+[Jest Mock for testing Google Cloud Firestore](https://www.npmjs.com/package/firestore-jest-mock)
