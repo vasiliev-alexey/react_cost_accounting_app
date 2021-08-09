@@ -15,10 +15,11 @@ import {
   TreeNode,
 } from 'react-sortable-tree';
 import { ExpenseType } from '../../../types/domain';
+import { Converter } from '../../utils/converter';
 
 interface CostsStateType {
   expenseName?: string;
-  expenseDate?: Date;
+  expenseDate?: number;
   amount?: number;
   categoryId?: CategoryTuple;
   show: boolean;
@@ -43,7 +44,10 @@ export class Costs extends React.Component<propsType, CostsStateType> {
 
     this.state = {
       expenseName: '',
-      expenseDate: new Date(),
+      expenseDate: Converter.date2Unix(
+        new Date(new Date(Date.now()).setHours(0, 0, 0, 0))
+      ),
+
       amount: 0,
       categoryId: { id: '', value: '' },
       show: false,
@@ -71,17 +75,9 @@ export class Costs extends React.Component<propsType, CostsStateType> {
   };
 
   #handleDayChange = (day: Date): void => {
-    this.setState({ expenseDate: day });
-  };
+    console.log('convert', day, ' after', Converter.date2Unix(day));
 
-  #onChangeSelect = (
-    currentNode: TreeItem
-    // selectedNodes: TreeNode[]
-  ): void => {
-    //  this.setState({ categoryId: currentNode.data });
-    this.#selectedCategory = { id: currentNode.data, value: currentNode.value };
-    console.log(this.state, 'currentNode.data:', currentNode.data);
-    console.log('currentNode', currentNode);
+    this.setState({ expenseDate: Converter.date2Unix(day) });
   };
 
   #onNameChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {
@@ -89,8 +85,6 @@ export class Costs extends React.Component<propsType, CostsStateType> {
   };
 
   render(): ReactElement {
-    console.log('render:', this.state);
-
     return (
       <Form onSubmit={this.#saveExpense}>
         <Row className="mb-2">
@@ -118,7 +112,7 @@ export class Costs extends React.Component<propsType, CostsStateType> {
               onDayChange={this.#handleDayChange}
               placeholder={'Дата расходов'}
               format={'DD.MM.YYYY'}
-              value={this.state.expenseDate}
+              value={Converter.unix2Date(this.state.expenseDate)}
               formatDate={MomentLocaleUtils.formatDate}
               parseDate={MomentLocaleUtils.parseDate}
               dayPickerProps={dayPickerProps}
@@ -193,13 +187,6 @@ export class Costs extends React.Component<propsType, CostsStateType> {
                   ignoreCollapsed: true,
                 });
 
-                // this.setState({
-                //   categoryId: {
-                //     id: node.node.id,
-                //     value: node.node.title.toString(),
-                //   },
-                // });
-
                 this.#selectedCategory = {
                   id: node.node.id,
                   value: node.node.title.toString(),
@@ -211,9 +198,6 @@ export class Costs extends React.Component<propsType, CostsStateType> {
                 console.log(1);
               }}
               buttonText="&#9734;"
-              // onChange={this.onChange}
-              // removeNode={this.removeNode}
-              // onNodeClick={this.onNodeClick}
             />
           </Modal.Body>
           <Modal.Footer>

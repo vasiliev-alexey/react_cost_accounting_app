@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { ExpenseType } from '../../../types/domain';
 import { Table } from 'react-bootstrap';
+import { Converter } from '../../utils/converter';
 
 interface ExpenseDto extends ExpenseType {
   categoryName: string;
@@ -16,6 +17,19 @@ class ExpenseTable extends Component<
 > {
   render(): React.ReactNode {
     const { expenseList } = this.props;
+    const childRows: React.ReactElement[] = expenseList.map((exp) => {
+      return (
+        <tr key={exp.expenseId}>
+          <td>3</td>
+          <td>{exp.categoryName}</td>
+          <td>{exp.amount}</td>
+          <td>
+            {Converter.unix2Date(exp.expenseDate).toLocaleDateString('Ru')}
+          </td>
+        </tr>
+      );
+    });
+
     return (
       <Table striped bordered hover>
         <thead>
@@ -26,24 +40,7 @@ class ExpenseTable extends Component<
             <th>Дата</th>
           </tr>
         </thead>
-        <tbody>
-          {expenseList.map((exp) => {
-            return (
-              <tr key={exp.categoryId + exp.expenseDate.toISOString()}>
-                <td>3</td>
-                <td>{exp.categoryId}</td>
-                <td>{exp.amount}</td>
-                <td>{exp.expenseDate.toLocaleDateString()}</td>
-              </tr>
-            );
-          })}
-
-          <tr>
-            <td>3</td>
-            <td colSpan={2}>Larry the Bird</td>
-            <td>@twitter</td>
-          </tr>
-        </tbody>
+        <tbody>{childRows}</tbody>
       </Table>
     );
   }

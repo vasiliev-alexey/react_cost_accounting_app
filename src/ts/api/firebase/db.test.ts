@@ -63,7 +63,7 @@ describe('test for expense', () => {
   test('test saveExpense', async () => {
     const data: ExpenseType = {
       categoryId: nanoid(12),
-      expenseDate: new Date(Date.now()),
+      expenseDate: Date.now(),
       amount: Math.round(Math.random() * 1000),
       description: 'test  expense for save',
     };

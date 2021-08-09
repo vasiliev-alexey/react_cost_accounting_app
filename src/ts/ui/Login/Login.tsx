@@ -2,9 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { RootState } from '../../store/store';
-import { loginWithEmailAndPassword } from '../../store/authSlice';
+import {
+  loginWithEmailAndPassword,
+  registerWithEmailAndPassword,
+} from '../../store/authSlice';
 import { ThunkProps } from '../utils';
 import { Redirect } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
 
 export type DispatchPropsType = ReturnType<typeof mapStateToProps> &
   ThunkProps<typeof mapDispatchThunkToProps>;
@@ -13,9 +17,25 @@ class Login extends Component<DispatchPropsType> {
   #loginRef = React.createRef<HTMLInputElement>();
   #passwordRef = React.createRef<HTMLInputElement>();
 
+  #registerMe = (event: React.MouseEvent<HTMLButtonElement>): void => {
+    console.log('ee:', event);
+    console.log(
+      'loginRef',
+      this.#loginRef.current.value,
+      'passwordRef',
+      this.#passwordRef.current.value
+    );
+
+    this.props.registerWithEmailAndPassword({
+      email: this.#loginRef.current.value,
+      password: this.#passwordRef.current.value,
+    });
+  };
+
   #authMe = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    console.log('sssss');
+
+    console.log('event.currentTarget.name=', event.target);
     console.log(
       'loginRef',
       this.#loginRef.current.value,
@@ -57,20 +77,21 @@ class Login extends Component<DispatchPropsType> {
             placeholder="Введите пароль"
           />
         </div>
-
-        <div className="form-group">
-          <div className="custom-control custom-checkbox">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="customCheck1"
-            />
-          </div>
+        <p></p>
+        <div>
+          <Button name="enter" type="submit" variant="primary">
+            Вход
+          </Button>
+          {'   '}
+          <Button
+            name="register"
+            type="button"
+            variant="info"
+            onClick={this.#registerMe}
+          >
+            Регистрация
+          </Button>
         </div>
-
-        <button type="submit" className="btn btn-primary btn-block">
-          Вход
-        </button>
       </form>
     );
   }
@@ -78,6 +99,7 @@ class Login extends Component<DispatchPropsType> {
 
 const mapDispatchThunkToProps = {
   loginWithEmailAndPass: loginWithEmailAndPassword,
+  registerWithEmailAndPassword: registerWithEmailAndPassword,
 };
 
 const mapStateToProps = (state: RootState) => ({

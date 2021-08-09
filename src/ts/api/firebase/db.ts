@@ -2,6 +2,22 @@ import { db } from './firebase';
 import { TreeItem } from 'react-sortable-tree';
 import { CATEGORY_COLLECTION, EXPENSE_COLLECTION } from './constants';
 import { ExpenseType } from '../../types/domain';
+import { Converter } from '../../ui/utils/converter';
+import { nanoid } from 'nanoid';
+
+function filCatList(
+  topCat: string,
+  items: TreeItem[],
+  catPam: Map<string, string>
+): void {
+  items.forEach((c) => {
+    catPam.set(c.id, topCat);
+
+    if (c.children.length > 0) {
+      filCatList(topCat, c.children as TreeItem[], catPam);
+    }
+  });
+}
 
 export const setUserCategory = async (
   userId: string,
@@ -33,7 +49,7 @@ export const setUserExpense = async (
     .collection(EXPENSE_COLLECTION)
     .doc(userId)
     .collection('expenses')
-    .add(expense);
+    .add({ ...expense, expenseId: nanoid(12) });
 
   return true;
 };
@@ -43,24 +59,44 @@ export const getUserExpenseList = async (
   beginDate: Date,
   endDate: Date
 ): Promise<ExpenseType[]> => {
+  const categories = await getUserCategory(userId);
+
+  const catMap = new Map<string, string>();
+
+  categories.map((cat) => {
+    const topCat = cat.title.toLocaleString();
+    catMap.set(cat.id, topCat);
+
+    if (cat.children.length > 0) {
+      filCatList(topCat, cat.children as TreeItem[], catMap);
+    }
+  });
+
   const doc = db
     .collection(EXPENSE_COLLECTION)
     .doc(userId)
     .collection('expenses');
-  let query = doc.where('expenseDate', '>=', beginDate);
-  query = query.where('expenseDate', '<=', endDate);
+
+  let query = doc.where(
+    'expenseDate',
+    '>=',
+    beginDate.setHours(0, 0, 0, 0) / 1000
+  );
+  query = query.where('expenseDate', '<=', Converter.date2Unix(endDate));
   const snapData = query.orderBy('expenseDate').get();
 
-  const x = await snapData;
+  try {
+    const x = await snapData;
 
-  console.log('getUserExpenseList:', endDate);
-
-  const rez = x.docs.map((exp) => {
-    return {
-      ...exp.data(),
-      expenseDate: exp.data().expenseDate.toDate(),
-    } as ExpenseType;
-  });
-
-  return rez;
+    const rez = x.docs.map((exp) => {
+      return {
+        ...exp.data(),
+        categoryName: catMap.get(exp.data().categoryId),
+      } as ExpenseType;
+    });
+    console.log('rez:', rez);
+    return rez;
+  } catch (e: unknown) {
+    console.log('e :', e);
+  }
 };

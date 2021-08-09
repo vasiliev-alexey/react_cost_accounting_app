@@ -6,7 +6,6 @@ import '@testing-library/jest-dom';
 describe('Header comp is function', () => {
   test('Header is function', () => {
     expect(Header).toBeInstanceOf(Function);
-    expect(new Header({})).toBeInstanceOf(React.Component);
   });
 });
 

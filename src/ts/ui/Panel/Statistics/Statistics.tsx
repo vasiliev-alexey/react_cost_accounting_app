@@ -11,10 +11,7 @@ import { RequestParam } from './types';
 
 class Statistics extends React.Component<DispatchPropsType, StateType> {
   #requestUserExpenseStats = async (params: RequestParam): Promise<void> => {
-    console.log('-> requestUserExpenseStats', params);
-
     await this.props.getExpenseList(params);
-    console.log('<-requestUserExpenseStats');
   };
 
   render(): ReactElement {

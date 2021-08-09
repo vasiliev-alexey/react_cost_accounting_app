@@ -36,13 +36,13 @@ class ParametersForm extends Component<PropsType, ParametersFormStateType> {
         <Form onSubmit={this.#getExpense}>
           <Row>
             <DateSelector
-              initialDate={new Date(Date.now())}
+              initialDate={this.state.beginDate}
               placeholder="Дата С"
               onDayChange={this.#onStartDateChange}
             />
 
             <DateSelector
-              initialDate={null}
+              initialDate={this.state.endDate}
               placeholder="Дата По"
               onDayChange={this.#onEndDateChange}
             />
@@ -67,7 +67,6 @@ class ParametersForm extends Component<PropsType, ParametersFormStateType> {
       beginDate: this.state.beginDate,
       endDate: this.state.endDate,
     });
-    console.log('event', event);
   };
 }
 

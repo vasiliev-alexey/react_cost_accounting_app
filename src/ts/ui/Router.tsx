@@ -1,6 +1,6 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import { Task } from './Panel/Task/Task';
+import Task from './Panel/Task/Task';
 import { MainPanel } from './About/MainPanel';
 import Settings from './Panel/Settings/Settings';
 
