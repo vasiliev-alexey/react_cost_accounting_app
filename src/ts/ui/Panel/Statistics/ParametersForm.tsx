@@ -26,9 +26,11 @@ class ParametersForm extends Component<PropsType, ParametersFormStateType> {
 
   #onStartDateChange = (day: Date): void => {
     this.setState({ beginDate: new Date(day.setHours(0, 0, 0, 0)) });
+    // надо поднять стейт наверх
   };
   #onEndDateChange = (day: Date): void => {
     this.setState({ endDate: new Date(day.setHours(0, 0, 0, 0)) });
+    //надо поднять стейт наверх
   };
 
   render(): React.ReactNode {

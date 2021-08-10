@@ -24,11 +24,11 @@ class Statistics extends React.Component<DispatchPropsType, StateType> {
       isLoading: false,
       beginDate: null,
       endDate: null,
-      showType: null,
+      showType: 'table',
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const routeParams = qs.parse(this.props.location.search, {
       ignoreQueryPrefix: true,
     });
@@ -65,18 +65,19 @@ class Statistics extends React.Component<DispatchPropsType, StateType> {
         viewType = view;
       }
     }
-
     this.setState({
       beginDate: firstDay,
       endDate: lastDay,
       showType: viewType,
     });
+    await this.#requestUserExpenseStats({
+      userId: this.props.userId,
+      endDate: lastDay,
+      beginDate: firstDay,
+    });
   }
 
   render(): ReactElement {
-    // const id = URLSearchParams(this.props.location).search.get('id');
-    // const id = this.props.location;
-    console.log('showType=', this.state.showType);
     const { userId, expenseLoaded, expenseList } = this.props;
     return (
       <>
@@ -90,7 +91,7 @@ class Statistics extends React.Component<DispatchPropsType, StateType> {
         <hr />
         {expenseLoaded && (
           <Tabs
-            defaultActiveKey="table"
+            activeKey={this.state.showType}
             id="uncontrolled-tab-example"
             className="mb-3"
           >
@@ -99,7 +100,11 @@ class Statistics extends React.Component<DispatchPropsType, StateType> {
             </Tab>
 
             <Tab eventKey="chart" title="График">
-              <ExpenseChart expenseList={expenseList} />
+              <ExpenseChart
+                expenseList={expenseList}
+                beginDate={this.state.beginDate}
+                endDate={this.state.endDate}
+              />
             </Tab>
           </Tabs>
         )}
