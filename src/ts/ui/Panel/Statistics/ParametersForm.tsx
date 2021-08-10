@@ -13,26 +13,10 @@ type PropsType = {
   userId: string;
   beginDate: Date;
   endDate: Date;
+  onStartDateChange: (day: Date) => void;
+  onEndDateChange: (day: Date) => void;
 };
 class ParametersForm extends Component<PropsType, ParametersFormStateType> {
-  constructor(props: Readonly<PropsType>) {
-    super(props);
-
-    this.state = {
-      beginDate: props.beginDate,
-      endDate: props.endDate,
-    };
-  }
-
-  #onStartDateChange = (day: Date): void => {
-    this.setState({ beginDate: new Date(day.setHours(0, 0, 0, 0)) });
-    // надо поднять стейт наверх
-  };
-  #onEndDateChange = (day: Date): void => {
-    this.setState({ endDate: new Date(day.setHours(0, 0, 0, 0)) });
-    //надо поднять стейт наверх
-  };
-
   render(): React.ReactNode {
     return (
       <>
@@ -42,13 +26,13 @@ class ParametersForm extends Component<PropsType, ParametersFormStateType> {
             <DateSelector
               initialDate={this.props.beginDate}
               placeholder="Дата С"
-              onDayChange={this.#onStartDateChange}
+              onDayChange={this.props.onStartDateChange}
             />
 
             <DateSelector
               initialDate={this.props.endDate}
               placeholder="Дата По"
-              onDayChange={this.#onEndDateChange}
+              onDayChange={this.props.onEndDateChange}
             />
 
             <Col>
@@ -68,8 +52,8 @@ class ParametersForm extends Component<PropsType, ParametersFormStateType> {
     event.preventDefault();
     await this.props.requestUserExpenseStats({
       userId: this.props.userId,
-      beginDate: this.state.beginDate,
-      endDate: this.state.endDate,
+      beginDate: this.props.beginDate,
+      endDate: this.props.endDate,
     });
   };
 }
