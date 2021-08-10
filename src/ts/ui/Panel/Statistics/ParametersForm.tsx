@@ -11,14 +11,16 @@ type ParametersFormStateType = {
 type PropsType = {
   requestUserExpenseStats: (params: RequestParam) => Promise<void>;
   userId: string;
+  beginDate: Date;
+  endDate: Date;
 };
 class ParametersForm extends Component<PropsType, ParametersFormStateType> {
   constructor(props: Readonly<PropsType>) {
     super(props);
 
     this.state = {
-      beginDate: new Date(Date.now()),
-      endDate: null,
+      beginDate: props.beginDate,
+      endDate: props.endDate,
     };
   }
 
@@ -36,13 +38,13 @@ class ParametersForm extends Component<PropsType, ParametersFormStateType> {
         <Form onSubmit={this.#getExpense}>
           <Row>
             <DateSelector
-              initialDate={this.state.beginDate}
+              initialDate={this.props.beginDate}
               placeholder="Дата С"
               onDayChange={this.#onStartDateChange}
             />
 
             <DateSelector
-              initialDate={this.state.endDate}
+              initialDate={this.props.endDate}
               placeholder="Дата По"
               onDayChange={this.#onEndDateChange}
             />
