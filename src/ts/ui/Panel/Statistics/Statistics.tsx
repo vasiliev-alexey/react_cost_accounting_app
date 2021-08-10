@@ -14,10 +14,6 @@ import qs from 'qs';
 import ExpenseChart from './ExpenseChart';
 
 class Statistics extends React.Component<DispatchPropsType, StateType> {
-  #requestUserExpenseStats = async (params: RequestParam): Promise<void> => {
-    await this.props.getExpenseList(params);
-  };
-
   constructor(props: Readonly<DispatchPropsType> | DispatchPropsType) {
     super(props);
     this.state = {
@@ -32,8 +28,6 @@ class Statistics extends React.Component<DispatchPropsType, StateType> {
     const routeParams = qs.parse(this.props.location.search, {
       ignoreQueryPrefix: true,
     });
-    console.log('primitiveValues', routeParams);
-
     const curr = new Date(); // get current date
     let firstDay: Date;
     let lastDay: Date;
@@ -41,11 +35,6 @@ class Statistics extends React.Component<DispatchPropsType, StateType> {
 
     if (routeParams.hasOwnProperty('type')) {
       const type = routeParams['type'];
-
-      console.log('sss');
-
-      // let beginDate: number;
-      // let endDate: number;
 
       if (type === 'week') {
         firstDay = new Date(curr.setDate(curr.getDate() - curr.getDay() + 1)); // First day is the day of the month - the day of the week
@@ -77,6 +66,17 @@ class Statistics extends React.Component<DispatchPropsType, StateType> {
     });
   }
 
+  #requestUserExpenseStats = async (params: RequestParam): Promise<void> => {
+    await this.props.getExpenseList(params);
+  };
+
+  #onStartDateChange = (date: Date): void => {
+    this.setState({ beginDate: date });
+  };
+  #onEndDateChange = (date: Date): void => {
+    this.setState({ endDate: date });
+  };
+
   render(): ReactElement {
     const { userId, expenseLoaded, expenseList } = this.props;
     return (
@@ -87,6 +87,8 @@ class Statistics extends React.Component<DispatchPropsType, StateType> {
           requestUserExpenseStats={this.#requestUserExpenseStats}
           beginDate={this.state.beginDate}
           endDate={this.state.endDate}
+          onEndDateChange={this.#onEndDateChange}
+          onStartDateChange={this.#onStartDateChange}
         />
         <hr />
         {expenseLoaded && (
