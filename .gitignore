@@ -7,3 +7,5 @@ doc/Заметки.md
 /coverage
 
 /dist
+
+.env

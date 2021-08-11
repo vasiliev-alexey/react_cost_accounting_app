@@ -4,27 +4,62 @@
  */
 
 module.exports = {
-  clearMocks: true,
-  resetMocks: true,
-  testEnvironment: 'jsdom',
+  projects: [
+    {
+      displayName: 'dom',
+      clearMocks: true,
+      resetMocks: true,
+      testEnvironment: 'jsdom',
 
-  coverageThreshold: {
-    global: {
-      branches: 60,
-      functions: 60,
-      lines: 60,
-      statements: 60,
-    },
-  },
+      coverageThreshold: {
+        global: {
+          branches: 60,
+          functions: 60,
+          lines: 60,
+          statements: 60,
+        },
+      },
+      //  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$',
+      testMatch: ['**/ui/**/*.test.ts?(x)'],
+      globals: {
+        'ts-jest': {
+          diagnostics: false,
+        },
+      },
+      transform: {
+        '^.+\\.tsx?$': 'babel-jest',
 
-  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$',
-  globals: {
-    'ts-jest': {
-      diagnostics: false,
+        '.+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$':
+          'jest-transform-stub',
+      },
+      moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
     },
-  },
-  transform: {
-    '^.+\\.tsx?$': 'babel-jest',
-  },
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+    {
+      displayName: 'node',
+
+      testMatch: ['**/api/**/*.test.ts?(x)'],
+      clearMocks: true,
+      resetMocks: true,
+      testEnvironment: 'node',
+
+      coverageThreshold: {
+        global: {
+          branches: 60,
+          functions: 60,
+          lines: 60,
+          statements: 60,
+        },
+      },
+      setupFiles: ['dotenv/config'],
+      globals: {
+        'ts-jest': {
+          diagnostics: false,
+        },
+      },
+      transform: {
+        '^.+\\.tsx?$': 'babel-jest',
+      },
+      moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+    },
+  ],
 };

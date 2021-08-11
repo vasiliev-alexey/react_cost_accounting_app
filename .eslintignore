@@ -3,3 +3,4 @@ coverage/*
 !.eslintrc.js
 /dist/*
 webpack.config.ts
+-src/ts/ui/Panel/Settings/Settings.tsx
