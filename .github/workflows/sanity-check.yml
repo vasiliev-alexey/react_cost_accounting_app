@@ -17,9 +17,13 @@ jobs:
         run: |
           npm run lint
 
+      - name: Run  Jest  T-E-S-T
+        run: |
+          npm run test
+
       - name: webpack  build
         run: |
-          npm run build
+          npm run build:prod
 
       - name: Deploy 2 G-H-P
         # https://github.com/marketplace/actions/deploy-to-github-pages
@@ -30,6 +34,3 @@ jobs:
           FOLDER: dist # The folder the action should deploy.
           CLEAN: true # Automatically remove deleted files from the deploy branch
 
-      - name: Run  Jest  T-E-S-T
-        run: |
-          npm run test
