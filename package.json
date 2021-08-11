@@ -11,7 +11,7 @@
     "lint:fix": "prettier --write . && eslint . --fix --ext .js,.ts,.tsx && tsc --noEmit",
     "prepare": "husky install",
     "dev": "webpack serve  --port 5000 --mode=development",
-    "storybook": "start-storybook -p 6006",
+    "storybook": "start-storybook -p 6006"
   },
   "keywords": [],
   "author": "vasiliev-alexey",
