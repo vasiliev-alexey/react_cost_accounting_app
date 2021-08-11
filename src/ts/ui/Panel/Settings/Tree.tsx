@@ -18,6 +18,8 @@ export class Tree extends Component<
   render(): React.ReactElement {
     const { treeData, onChange, removeNode, onNodeClick } = this.props;
 
+    console.log('treeData:', treeData);
+
     return (
       <SortableTree
         treeData={treeData}

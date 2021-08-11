@@ -86,6 +86,8 @@ const settingSlice = createSlice({
       state.isLoaded = false;
     });
     builder.addCase(fetchUserCategory.fulfilled, (state, action) => {
+      log('fetchUserCategory  fulfilled', action);
+
       state.treeData = action.payload;
       state.isLoaded = true;
     });

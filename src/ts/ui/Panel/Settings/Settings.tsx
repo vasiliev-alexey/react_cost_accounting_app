@@ -22,6 +22,7 @@ import { Tree } from './Tree';
 import { ThunkProps } from '../../utils';
 import Preloader from '../Preloader';
 import { nanoid } from 'nanoid';
+import { log } from '../../utils/logger';
 
 type PathType = (string | number)[];
 
@@ -71,6 +72,7 @@ class Settings extends Component<DispatchPropsType, StateType> {
   }
 
   componentDidUpdate(prevProps: Readonly<DispatchPropsType>) {
+    log('Statistics: componentDidUpdate', this.props.treeData);
     if (prevProps.treeData !== this.props.treeData) {
       this.setState({
         isLoading: false,
@@ -85,6 +87,8 @@ class Settings extends Component<DispatchPropsType, StateType> {
     } else {
       this.setState({ isLoading: true, treeData: [] });
     }
+
+    this.props.fetchCategory(this.props.userId);
   }
 
   onChange = (treeData: TreeItem[]): void => {

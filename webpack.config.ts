@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import path from 'path';
+const path = require('path');
 import 'webpack-dev-server';
 // import { Configuration } from 'webpack';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+// import { HtmlWebpackPlugin } from 'html-webpack-plugin';
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
 import * as webpack from 'webpack';
 

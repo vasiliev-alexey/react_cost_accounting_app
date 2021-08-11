@@ -33,14 +33,7 @@ export class App extends Component<{}, RootStateType> {
             <Navigation />
           </Col>
           <Col xl={7}>
-            {/*<Switch>*/}
-            {/*  <Switch>*/}
-            {/*    <Route exact path="/" component={MainPanel} />*/}
-            {/*    <Route exact path="/task" component={Task} />*/}
-            {/*  </Switch>*/}
-            {/*</Switch>*/}
             <Routes />
-            {/*<Task />*/}
           </Col>
           <Col xl={1} />
         </Row>
