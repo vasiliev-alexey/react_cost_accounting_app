@@ -7,10 +7,15 @@ import {
 } from './db';
 import { ExpenseType } from '../../types/domain';
 import { nanoid } from 'nanoid';
+import firebase from 'firebase';
 
 describe('test db functions', () => {
   beforeAll(() => {
     config();
+  });
+
+  afterAll(() => {
+    firebase.app().delete();
   });
 
   test('test setUserCategoryTree', async () => {
@@ -58,9 +63,7 @@ describe('test db functions', () => {
     const x = await getUserCategory('*****');
     expect(x).toEqual([]);
   });
-});
 
-describe('test for expense', () => {
   test('test saveExpense', async () => {
     const data: ExpenseType = {
       categoryId: nanoid(12),
