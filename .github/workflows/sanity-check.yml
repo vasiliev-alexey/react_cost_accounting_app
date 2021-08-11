@@ -19,7 +19,7 @@ jobs:
 
       - name: webpack  build
         run: |
-          npm run webpack
+          npm run build
 
       - name: Deploy 2 G-H-P
         # https://github.com/marketplace/actions/deploy-to-github-pages
