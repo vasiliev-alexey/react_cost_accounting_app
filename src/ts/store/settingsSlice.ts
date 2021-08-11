@@ -7,14 +7,13 @@ import {
 } from 'react-sortable-tree';
 import { nanoid } from 'nanoid';
 import { getUserCategory, setUserCategory } from '../api/firebase/db';
-
-//const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+import { log } from '../ui/utils/logger';
 
 export const fetchUserCategory = createAsyncThunk<TreeItem[], string>(
   'fetchUserCategory',
   async (userId) => {
     const data = await getUserCategory(userId);
-    console.log('data : ', data);
+    log('data : ', data);
     return data;
   }
 );
@@ -23,14 +22,13 @@ export const saveUserCategories = createAsyncThunk<
   TreeItem[],
   { userId: string; categoryTree: TreeItem[] }
 >('saveUserCategories', async ({ userId, categoryTree }, {}) => {
-  console.log('saveUserCategories -> ', userId, { categoryTree });
+  log('saveUserCategories -> ', userId, { categoryTree });
 
   const data = await setUserCategory(userId, { categoryTree });
-  console.log('data : ', data);
+
   return data;
 });
 
-// basic example slice copied from the docs
 const settingSlice = createSlice({
   name: 'settings',
   initialState: {
@@ -40,8 +38,6 @@ const settingSlice = createSlice({
   },
   reducers: {
     addItem: (state, action) => {
-      console.log('state', state, 'action', action);
-
       const newNode = {
         id: nanoid(10),
         title: action.payload.title,
@@ -54,36 +50,31 @@ const settingSlice = createSlice({
       } else {
         const node: TreeNode = getNodeAtPath({
           treeData: state.treeData,
-          path: action.payload.path, // You can use path from here
+          path: action.payload.path,
           getNodeKey: ({ node: { id } }) => id,
           ignoreCollapsed: true,
         });
         (node.node.children as TreeItem).push(newNode);
         node.node.expanded = true;
-        console.log('node', node.node);
       }
       state.selectedItem = null;
     },
 
     syncState: (state, action) => {
-      console.log('state', state, 'action', action);
       state.treeData = action.payload;
       state.selectedItem = null;
     },
 
     removeNode(state, action) {
-      console.log('state', state, 'action', action);
       state.treeData = removeNodeAtPath({
         treeData: state.treeData,
-        path: action.payload, // You can use path from here
+        path: action.payload,
         getNodeKey: ({ node: { id } }) => id,
         ignoreCollapsed: true,
       });
     },
 
     loadData: (state, action) => {
-      console.log('loadData state', state, action);
-
       const treeData = action.payload.treData;
       state.treeData = treeData;
       state.selectedItem = null;
@@ -109,11 +100,8 @@ const settingSlice = createSlice({
   },
 });
 
-// destructure actions and reducer from the slice (or you can access as counterSlice.actions)
 const { actions, reducer } = settingSlice;
 
-// export individual action creator functions
 export const { addItem, loadData, removeNode, syncState } = actions;
 
-// often the reducer is a default export, but that doesn't matter
 export default reducer;

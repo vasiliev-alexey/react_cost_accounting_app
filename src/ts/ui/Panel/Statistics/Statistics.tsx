@@ -12,6 +12,7 @@ import { withRouter } from 'react-router-dom';
 import { RouteComponentProps } from 'react-router';
 import qs from 'qs';
 import ExpenseChart from './ExpenseChart';
+import { log } from '../../utils/logger';
 
 class Statistics extends React.Component<DispatchPropsType, StateType> {
   constructor(props: Readonly<DispatchPropsType> | DispatchPropsType) {
@@ -28,7 +29,7 @@ class Statistics extends React.Component<DispatchPropsType, StateType> {
     const routeParams = qs.parse(this.props.location.search, {
       ignoreQueryPrefix: true,
     });
-    const curr = new Date(); // get current date
+    const curr = new Date();
     let firstDay: Date;
     let lastDay: Date;
     let viewType: ViewType;
@@ -37,10 +38,10 @@ class Statistics extends React.Component<DispatchPropsType, StateType> {
       const type = routeParams['type'];
 
       if (type === 'week') {
-        firstDay = new Date(curr.setDate(curr.getDate() - curr.getDay() + 1)); // First day is the day of the month - the day of the week
+        firstDay = new Date(curr.setDate(curr.getDate() - curr.getDay() + 1));
         lastDay = new Date(
           curr.setDate(curr.getDate() - curr.getDay() + 1 + 7)
-        ); // last day is the first day + 6
+        );
       } else if (type === 'month') {
         firstDay = new Date(curr.getFullYear(), curr.getMonth(), 1);
         lastDay = new Date(curr.getFullYear(), curr.getMonth() + 1, 0);
@@ -59,11 +60,15 @@ class Statistics extends React.Component<DispatchPropsType, StateType> {
       endDate: lastDay,
       showType: viewType,
     });
-    await this.#requestUserExpenseStats({
-      userId: this.props.userId,
-      endDate: lastDay,
-      beginDate: firstDay,
-    });
+
+    if (firstDay) {
+      log('runn requestUserExpenseStats');
+      await this.#requestUserExpenseStats({
+        userId: this.props.userId,
+        endDate: lastDay,
+        beginDate: firstDay,
+      });
+    }
   }
 
   #requestUserExpenseStats = async (params: RequestParam): Promise<void> => {

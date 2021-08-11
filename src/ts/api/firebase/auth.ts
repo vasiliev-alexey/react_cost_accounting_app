@@ -1,7 +1,5 @@
 import { auth } from './firebase';
 import firebase from 'firebase';
-import UserCredential = firebase.auth.UserCredential;
-//import UserCredential = firebase.auth.UserCredential;
 
 // Sign In
 export const doSignInWithEmailAndPassword = (
@@ -15,5 +13,5 @@ export const doSignOut = (): Promise<void> => auth.signOut();
 export const registerUser = (
   email: string,
   password: string
-): Promise<UserCredential> =>
+): Promise<firebase.auth.UserCredential> =>
   auth.createUserWithEmailAndPassword(email, password);

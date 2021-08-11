@@ -1,5 +1,4 @@
 import { Converter } from './converter';
-import exp from 'constants';
 
 describe('test converter', () => {
   test('test date2Unix with null', () => {

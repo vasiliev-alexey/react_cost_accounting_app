@@ -4,6 +4,7 @@ import { CATEGORY_COLLECTION, EXPENSE_COLLECTION } from './constants';
 import { ExpenseType } from '../../types/domain';
 import { Converter } from '../../ui/utils/converter';
 import { nanoid } from 'nanoid';
+import { log } from '../../ui/utils/logger';
 
 function filCatList(
   topCat: string,
@@ -59,33 +60,33 @@ export const getUserExpenseList = async (
   beginDate: Date,
   endDate: Date
 ): Promise<ExpenseType[]> => {
-  const categories = await getUserCategory(userId);
-
-  const catMap = new Map<string, string>();
-
-  categories.map((cat) => {
-    const topCat = cat.title.toLocaleString();
-    catMap.set(cat.id, topCat);
-
-    if (cat.children.length > 0) {
-      filCatList(topCat, cat.children as TreeItem[], catMap);
-    }
-  });
-
-  const doc = db
-    .collection(EXPENSE_COLLECTION)
-    .doc(userId)
-    .collection('expenses');
-
-  let query = doc.where(
-    'expenseDate',
-    '>=',
-    beginDate.setHours(0, 0, 0, 0) / 1000
-  );
-  query = query.where('expenseDate', '<=', Converter.date2Unix(endDate));
-  const snapData = query.orderBy('expenseDate').get();
-
   try {
+    const categories = await getUserCategory(userId);
+
+    const catMap = new Map<string, string>();
+
+    categories.map((cat) => {
+      const topCat = cat.title.toLocaleString();
+      catMap.set(cat.id, topCat);
+
+      if (cat.children.length > 0) {
+        filCatList(topCat, cat.children as TreeItem[], catMap);
+      }
+    });
+
+    const doc = db
+      .collection(EXPENSE_COLLECTION)
+      .doc(userId)
+      .collection('expenses');
+
+    let query = doc.where(
+      'expenseDate',
+      '>=',
+      beginDate.setHours(0, 0, 0, 0) / 1000
+    );
+    query = query.where('expenseDate', '<=', Converter.date2Unix(endDate));
+    const snapData = query.orderBy('expenseDate').get();
+
     const x = await snapData;
 
     const rez = x.docs.map((exp) => {
@@ -94,9 +95,9 @@ export const getUserExpenseList = async (
         categoryName: catMap.get(exp.data().categoryId),
       } as ExpenseType;
     });
-    console.log('rez:', rez);
+    log('rez:', rez);
     return rez;
   } catch (e: unknown) {
-    console.log('e :', e);
+    return;
   }
 };

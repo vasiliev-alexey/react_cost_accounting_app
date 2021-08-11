@@ -6,6 +6,7 @@ import {
   doSignInWithEmailAndPassword,
   registerUser,
 } from '../api/firebase/auth';
+import { log } from '../ui/utils/logger';
 
 interface userCred {
   userID: string;
@@ -17,7 +18,7 @@ export const loginWithEmailAndPassword = createAsyncThunk<
   { email: string; password: string }
 >(
   'auth/register',
-  // if you type your function argument here
+
   async ({ email, password }) => {
     const data = await doSignInWithEmailAndPassword(email, password);
 
@@ -29,17 +30,16 @@ export const registerWithEmailAndPassword = createAsyncThunk<
   { email: string; password: string }
 >(
   'auth/login',
-  // if you type your function argument here
+
   async ({ email, password }) => {
     const data = await registerUser(email, password);
 
-    console.log('fetchCategory = data', data);
+    log('fetchCategory = data', data);
 
     return { userID: data.user.uid, userName: data.user.email };
   }
 );
 
-// basic example slice copied from the docs
 const counterSlice = createSlice({
   name: 'auth',
   initialState: {
@@ -57,7 +57,6 @@ const counterSlice = createSlice({
       state.isAuthenticated = false;
     });
     builder.addCase(loginWithEmailAndPassword.fulfilled, (state, action) => {
-      console.log('authed');
       state.userId = action.payload.userID;
       state.userName = action.payload.userName;
       state.isAuthenticated = true;
@@ -78,11 +77,6 @@ const counterSlice = createSlice({
   },
 });
 
-// destructure actions and reducer from the slice (or you can access as counterSlice.actions)
 const { reducer } = counterSlice;
 
-// export individual action creator functions
-//export const { increment } = actions;
-
-// often the reducer is a default export, but that doesn't matter
 export default reducer;

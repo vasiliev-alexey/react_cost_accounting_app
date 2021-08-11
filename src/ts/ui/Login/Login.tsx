@@ -18,14 +18,7 @@ class Login extends Component<DispatchPropsType> {
   #passwordRef = React.createRef<HTMLInputElement>();
 
   #registerMe = (event: React.MouseEvent<HTMLButtonElement>): void => {
-    console.log('ee:', event);
-    console.log(
-      'loginRef',
-      this.#loginRef.current.value,
-      'passwordRef',
-      this.#passwordRef.current.value
-    );
-
+    event.preventDefault();
     this.props.registerWithEmailAndPassword({
       email: this.#loginRef.current.value,
       password: this.#passwordRef.current.value,
@@ -34,14 +27,6 @@ class Login extends Component<DispatchPropsType> {
 
   #authMe = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-
-    console.log('event.currentTarget.name=', event.target);
-    console.log(
-      'loginRef',
-      this.#loginRef.current.value,
-      'passwordRef',
-      this.#passwordRef.current.value
-    );
 
     this.props.loginWithEmailAndPass({
       email: this.#loginRef.current.value,

@@ -25,7 +25,6 @@ const weekdaysLong = [
 ];
 
 const firstDayOfWeek = 1;
-// Translate aria-labels
 const labels = {
   nextMonth: 'следующий месяц',
   previousMonth: 'предыдущий месяц',

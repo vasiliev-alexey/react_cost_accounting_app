@@ -75,8 +75,6 @@ export class Costs extends React.Component<propsType, CostsStateType> {
   };
 
   #handleDayChange = (day: Date): void => {
-    console.log('convert', day, ' after', Converter.date2Unix(day));
-
     this.setState({ expenseDate: Converter.date2Unix(day) });
   };
 
@@ -128,7 +126,6 @@ export class Costs extends React.Component<propsType, CostsStateType> {
           <Col sm={10}>
             <NumberFormat
               value={this.state.amount}
-              // thousandSeparator={' '}
               onChange={this.#onChangeAmount}
               readOnly={this.props.isCostSaved}
               disabled={this.props.isCostSaved}
@@ -182,7 +179,7 @@ export class Costs extends React.Component<propsType, CostsStateType> {
               removeNode={(rowInfo: ExtendedNodeData) => {
                 const node: TreeNode = getNodeAtPath({
                   treeData: this.state.treeData,
-                  path: rowInfo.path, // You can use path from here
+                  path: rowInfo.path,
                   getNodeKey: ({ node: { id } }) => id,
                   ignoreCollapsed: true,
                 });
@@ -191,12 +188,9 @@ export class Costs extends React.Component<propsType, CostsStateType> {
                   id: node.node.id,
                   value: node.node.title.toString(),
                 };
-
-                console.log('node', node.node.id);
               }}
-              onNodeClick={() => {
-                console.log(1);
-              }}
+              // eslint-disable-next-line  @typescript-eslint/no-empty-function
+              onNodeClick={() => {}}
               buttonText="&#9734;"
             />
           </Modal.Body>

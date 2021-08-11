@@ -18,8 +18,6 @@ class ExpenseChart extends Component<
       );
     });
 
-    console.log([...catSums]);
-
     return (
       <Chart
         width={'800px'}

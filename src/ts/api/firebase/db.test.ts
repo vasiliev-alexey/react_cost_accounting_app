@@ -2,10 +2,8 @@ import { config } from 'dotenv';
 import {
   getUserCategory,
   getUserExpenseList,
-  //getUserData,
   setUserCategory,
   setUserExpense,
-  //setUserData,
 } from './db';
 import { ExpenseType } from '../../types/domain';
 import { nanoid } from 'nanoid';
@@ -16,7 +14,6 @@ describe('test db functions', () => {
   });
 
   test('test setUserCategoryTree', async () => {
-    console.log('1111');
     const x = await setUserCategory('11111', {
       categoryTree: [
         {
@@ -48,8 +45,8 @@ describe('test db functions', () => {
         },
       ],
     });
-    console.log('22222');
-    console.log(x);
+
+    expect(x).not.toBeNull();
   });
 
   test('test getUserCategory', async () => {
@@ -74,7 +71,7 @@ describe('test for expense', () => {
 
     const x = setUserExpense('11111', data);
 
-    console.log(x);
+    expect(x).not.toBeNull();
   });
 
   test('test get  expense', async () => {
@@ -83,7 +80,8 @@ describe('test for expense', () => {
       new Date('2021-08-01'),
       new Date('2021-09-01')
     );
-    console.log(x);
+    expect(x).not.toBeNull();
+    expect(x.length).toBeGreaterThanOrEqual(1);
   });
 
   test('test get  expense with null', async () => {

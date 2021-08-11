@@ -27,8 +27,6 @@ class CostsContainer extends Component<DispatchPropsType, StateType> {
   }
 
   override componentDidMount(): void {
-    // this.props.loadData();
-
     if (this.state.treeData !== null) {
       this.setState({ treeData: [] });
     } else {

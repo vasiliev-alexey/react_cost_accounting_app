@@ -80,17 +80,11 @@ class Settings extends Component<DispatchPropsType, StateType> {
   }
 
   override async componentDidMount(): Promise<void> {
-    // this.props.loadData();
-
     if (this.state.treeData !== null) {
       this.setState({ treeData: [] });
     } else {
       this.setState({ isLoading: true, treeData: [] });
     }
-    console.log('this.props.userId:', this.props.userId);
-    const data = await this.props.fetchCategory(this.props.userId);
-
-    console.log('this.props.data:', data);
   }
 
   onChange = (treeData: TreeItem[]): void => {
@@ -104,8 +98,6 @@ class Settings extends Component<DispatchPropsType, StateType> {
   };
 
   onChangeInput = (evt: React.FormEvent<HTMLInputElement>): void => {
-    console.log('evt', evt.currentTarget.value);
-
     if (evt.currentTarget.name === 'title') {
       this.setState({ newCategoryName: evt.currentTarget.value });
     } else if (evt.currentTarget.name === 'desc') {
@@ -124,34 +116,23 @@ class Settings extends Component<DispatchPropsType, StateType> {
     const data = clone(this.state.treeData);
 
     if (!(this.state.selectedItem && this.state.selectedPath)) {
-      console.log('state.treeData:', data);
       data.push(newNode);
     } else {
       const node: TreeNode = getNodeAtPath({
         treeData: data,
-        path: this.state.selectedItem && this.state.selectedPath, // You can use path from here
+        path: this.state.selectedItem && this.state.selectedPath,
         getNodeKey: ({ node: { id } }) => id,
         ignoreCollapsed: true,
       });
-      console.log('state.treeData:', data, node.node.children);
 
       (node.node.children as TreeItem).push(newNode);
       node.node.expanded = true;
     }
-    console.log('categoryTree', data);
 
     await this.props.saveCategoryTree({
       userId: this.props.userId,
       categoryTree: removeExpanded(data),
     });
-    console.log('categoryTree2222', this.state.treeData);
-    // this.props.addItem({
-    //   path: this.state.selectedItem && this.state.selectedPath,
-    //   title: this.state.newCategoryName,
-    //   subtitle: this.state.newCategoryDesc,
-    // });
-
-    //saveUserCategories
 
     this.setState({ newCategoryName: '', newCategoryDesc: '' });
   };
@@ -165,7 +146,6 @@ class Settings extends Component<DispatchPropsType, StateType> {
 
   render(): React.ReactElement {
     if (!this.props.isLoading) {
-      console.log('run preloader');
       return <Preloader />;
     }
 
@@ -193,26 +173,6 @@ class Settings extends Component<DispatchPropsType, StateType> {
   }
 }
 
-// const mapDispatchToPropsSync = {
-//   addItem: addItem,
-//   loadData: loadData,
-//   removeNode: removeNode,
-//   syncState: syncState,
-// };
-
-// const mapDispatchToProps = (dispatch: Dispatch) =>
-//   bindActionCreators(
-//     {
-//       fetchCategory: fetchCategory,
-//
-//       addItem: addItem,
-//       loadData: loadData,
-//       removeNode: removeNode,
-//       syncState: syncState,
-//     },
-//     dispatch
-//   );
-
 const actionProps = {
   addItem: addItem,
   loadData: loadData,
@@ -230,9 +190,6 @@ const mapStateToProps = (state: RootState) => ({
   isLoading: state.setting.isLoaded,
   userId: state.auth.userId,
 });
-//
-// type mapDispatchToProps = typeof mapDispatchToPropsSync &
-//   typeof mapDispatchToPropsAsync;
 
 export default connect(mapStateToProps, {
   ...actionProps,
