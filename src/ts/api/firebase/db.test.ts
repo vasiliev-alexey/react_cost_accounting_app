@@ -54,8 +54,12 @@ describe('test db functions', () => {
 
   test('test getUserCategory', async () => {
     const x = await getUserCategory('11111');
+    expect(x).not.toBeNull();
+  });
 
-    console.log(x);
+  test('test getUserCategory with null', async () => {
+    const x = await getUserCategory('*****');
+    expect(x).toEqual([]);
   });
 });
 
@@ -80,5 +84,14 @@ describe('test for expense', () => {
       new Date('2021-09-01')
     );
     console.log(x);
+  });
+
+  test('test get  expense with null', async () => {
+    const x = await getUserExpenseList(
+      null,
+      new Date('2021-08-01'),
+      new Date('2021-09-01')
+    );
+    expect(x).toBe(undefined);
   });
 });
