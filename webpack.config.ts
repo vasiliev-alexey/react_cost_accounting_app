@@ -65,6 +65,9 @@ const webpackConfig = (env: {
         test: /\.png/,
         use: {
           loader: 'url-loader',
+          options: {
+            context: 'src',
+          },
         },
         include: [path.resolve(__dirname, 'src/img')],
       },
