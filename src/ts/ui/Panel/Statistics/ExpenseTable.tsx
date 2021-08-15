@@ -33,7 +33,7 @@ class ExpenseTable extends Component<
     return (
       <Table striped bordered hover>
         <thead>
-          <tr>
+          <tr key={'h-row'}>
             <th>#</th>
             <th>Категория</th>
             <th>Сумма</th>

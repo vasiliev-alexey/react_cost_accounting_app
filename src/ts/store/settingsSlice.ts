@@ -21,13 +21,18 @@ export const fetchUserCategory = createAsyncThunk<TreeItem[], string>(
 export const saveUserCategories = createAsyncThunk<
   TreeItem[],
   { userId: string; categoryTree: TreeItem[] }
->('saveUserCategories', async ({ userId, categoryTree }, {}) => {
-  log('saveUserCategories -> ', userId, { categoryTree });
-
-  const data = await setUserCategory(userId, { categoryTree });
-
-  return data;
-});
+>(
+  'saveUserCategories',
+  async ({ userId, categoryTree }, { rejectWithValue }) => {
+    log('saveUserCategories -> ', userId, { categoryTree });
+    try {
+      const data = await setUserCategory(userId, { categoryTree });
+      return data;
+    } catch (e: unknown) {
+      rejectWithValue(e);
+    }
+  }
+);
 
 const settingSlice = createSlice({
   name: 'settings',
@@ -35,6 +40,9 @@ const settingSlice = createSlice({
     treeData: [],
     selectedItem: null,
     isLoaded: false,
+    errors: {
+      message: null,
+    },
   },
   reducers: {
     addItem: (state, action) => {
@@ -92,9 +100,15 @@ const settingSlice = createSlice({
       state.isLoaded = true;
     });
 
-    builder.addCase(saveUserCategories.pending, (state) => {
+    builder.addCase(saveUserCategories.pending, (state, action) => {
+      state.isLoaded = false;
+      state.errors.message = action.payload;
+    });
+
+    builder.addCase(saveUserCategories.rejected, (state) => {
       state.isLoaded = false;
     });
+
     builder.addCase(saveUserCategories.fulfilled, (state, action) => {
       state.treeData = action.payload;
       state.isLoaded = true;

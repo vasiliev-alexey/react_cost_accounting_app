@@ -10,7 +10,7 @@ module.exports = {
       clearMocks: true,
       resetMocks: true,
       testEnvironment: 'jsdom',
-
+      setupFiles: ['dotenv/config'],
       coverageThreshold: {
         global: {
           branches: 60,
@@ -29,7 +29,7 @@ module.exports = {
       transform: {
         '^.+\\.tsx?$': 'babel-jest',
 
-        '.+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$':
+        '.+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2|md)$':
           'jest-transform-stub',
       },
       moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],

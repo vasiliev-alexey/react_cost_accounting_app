@@ -65,7 +65,7 @@ class Settings extends Component<DispatchPropsType, StateType> {
   constructor(props: DispatchPropsType) {
     super(props);
     this.state = {
-      treeData: clone(this.props.treeData) || [],
+      treeData: clone(this.props.treeData || []),
       selectedItem: null,
       isLoading: true,
     };
@@ -76,7 +76,7 @@ class Settings extends Component<DispatchPropsType, StateType> {
     if (prevProps.treeData !== this.props.treeData) {
       this.setState({
         isLoading: false,
-        treeData: clone(this.props.treeData) || [],
+        treeData: clone(this.props.treeData || []),
       });
     }
   }
@@ -168,7 +168,18 @@ class Settings extends Component<DispatchPropsType, StateType> {
           subtitle={this.state.newCategoryDesc || ''}
           onChangeInput={this.onChangeInput}
         />
-        <Button onClick={this.addCategory}>
+        <Button
+          onClick={this.addCategory}
+          data-testid="stt-btn-add-cat"
+          disabled={
+            !(
+              this.state.newCategoryName &&
+              this.state.newCategoryDesc &&
+              this.state.newCategoryDesc.length > 0 &&
+              this.state.newCategoryName.length > 0
+            )
+          }
+        >
           {(this.state.selectedItem && `Добавить подкатегорию`) ||
             `Добавить категорию`}
         </Button>

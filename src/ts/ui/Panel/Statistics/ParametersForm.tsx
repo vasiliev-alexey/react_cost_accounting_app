@@ -21,7 +21,7 @@ class ParametersForm extends Component<PropsType, ParametersFormStateType> {
     return (
       <>
         <p>Параметры для отображения:</p>
-        <Form onSubmit={this.#getExpense}>
+        <Form data-testid={'form-param'} onSubmit={this.#getExpense}>
           <Row>
             <DateSelector
               initialDate={this.props.beginDate}
@@ -36,7 +36,11 @@ class ParametersForm extends Component<PropsType, ParametersFormStateType> {
             />
 
             <Col>
-              <Button variant="primary" type="submit">
+              <Button
+                data-testid={'form-btn-param'}
+                variant="primary"
+                type="submit"
+              >
                 Посчитать
               </Button>
             </Col>

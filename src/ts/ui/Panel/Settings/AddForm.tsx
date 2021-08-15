@@ -14,10 +14,12 @@ class AddForm extends Component<AddFormProps, {}> {
         <hr />
         <p>
           <input
+            data-testid={'addForm-input'}
             onChange={onChangeInput}
             type="text"
             value={title}
             name="title"
+            required={true}
             placeholder={'Имя'}
           />
           <input
@@ -25,6 +27,7 @@ class AddForm extends Component<AddFormProps, {}> {
             type="text"
             value={subtitle}
             name="desc"
+            required={true}
             placeholder={'Описание'}
           />
         </p>

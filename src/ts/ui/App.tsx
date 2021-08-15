@@ -3,6 +3,7 @@ import 'bootswatch/dist/cosmo/bootstrap.min.css';
 import 'react-sortable-tree/style.css';
 import { Col, Container, Row } from 'react-bootstrap';
 import '../../css/index.scss';
+import 'react-day-picker/lib/style.css';
 import Header from './Header/Header';
 import { Navigation } from './Navbar/Navigation';
 import { Logo } from './Logo/Logo';

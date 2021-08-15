@@ -18,8 +18,6 @@ export class Tree extends Component<
   render(): React.ReactElement {
     const { treeData, onChange, removeNode, onNodeClick } = this.props;
 
-    console.log('treeData:', treeData);
-
     return (
       <SortableTree
         treeData={treeData}
@@ -38,6 +36,7 @@ export class Tree extends Component<
 
             buttons: [
               <Button
+                data-testid="tree-Button-test-id"
                 key={`removeNode-key`}
                 onClick={() => removeNode(rowInf)}
                 variant="info"

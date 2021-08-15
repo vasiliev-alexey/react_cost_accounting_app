@@ -1,7 +1,6 @@
 import React, { ReactElement } from 'react';
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
-import 'react-day-picker/lib/style.css';
 
 import MomentLocaleUtils from 'react-day-picker/moment';
 
@@ -53,6 +52,15 @@ export class Costs extends React.Component<propsType, CostsStateType> {
       show: false,
       treeData: [...props.treeData],
     };
+  }
+
+  #isValidCost(): boolean {
+    return (
+      this.state.amount > 0 &&
+      this.state.expenseName !== '' &&
+      this.state.expenseDate !== null &&
+      this.state.categoryId.id !== ''
+    );
   }
 
   #selectedCategory: CategoryTuple;
@@ -150,6 +158,7 @@ export class Costs extends React.Component<propsType, CostsStateType> {
           <Col>
             <Button
               variant="primary"
+              data-testid="button-show-modal-id"
               onClick={() => {
                 this.setState({ show: true });
               }}
@@ -221,6 +230,7 @@ export class Costs extends React.Component<propsType, CostsStateType> {
         <Button
           variant={this.props.isCostSaved ? 'light' : 'primary'}
           type="submit"
+          disabled={!this.#isValidCost()}
         >
           {this.props.isCostSaved ? 'Сохранено' : 'Сохранить'}
         </Button>
