@@ -9,6 +9,7 @@ import { config } from 'dotenv';
 import { Provider } from 'react-redux';
 import Statistics from './Statistics';
 import { MemoryRouter } from 'react-router-dom';
+import firebase from 'firebase';
 
 const middlewares: Middleware[] = [thunk];
 const mockStore = configureStore(middlewares);
@@ -16,6 +17,9 @@ const mockStore = configureStore(middlewares);
 describe('Statistics comp is function', () => {
   beforeAll(() => {
     config();
+  });
+  afterAll(() => {
+    firebase.app().delete();
   });
 
   test('Statistics is function', () => {

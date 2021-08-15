@@ -7,6 +7,7 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { Middleware } from '@reduxjs/toolkit';
 import { MemoryRouter } from 'react-router-dom';
+import firebase from '../../api/firebase/firebase';
 
 const middlewares: Middleware[] = [];
 const mockStore = configureStore(middlewares);
@@ -18,6 +19,10 @@ describe('Header comp is function', () => {
 });
 
 describe('Header render test ', () => {
+  afterAll(() => {
+    firebase.app().delete();
+  });
+
   test('Header  render in page', () => {
     const initialState = {
       auth: {

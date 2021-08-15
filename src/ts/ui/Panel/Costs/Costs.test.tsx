@@ -8,6 +8,8 @@ import { Costs } from './Costs';
 import { TreeItem } from 'react-sortable-tree';
 import userEvent from '@testing-library/user-event';
 
+import firebase from '../../../api/firebase/firebase';
+
 const middlewares: Middleware[] = [];
 configureStore(middlewares);
 
@@ -42,6 +44,13 @@ const treeData: TreeItem[] = [
 ];
 
 describe('Costs comp is function', () => {
+  afterAll(() => {
+    firebase.app().delete();
+  });
+  beforeAll(() => {
+    firebase.app().firestore();
+  });
+
   test('Costs is function', () => {
     expect(Costs).toBeInstanceOf(Function);
   });

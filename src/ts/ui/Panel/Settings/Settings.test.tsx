@@ -9,6 +9,7 @@ import Settings from './Settings';
 import { config } from 'dotenv';
 import { Provider } from 'react-redux';
 import { TreeItem } from 'react-sortable-tree';
+import firebase from '../../../api/firebase/firebase';
 
 const middlewares: Middleware[] = [thunk];
 const mockStore = configureStore(middlewares);
@@ -46,6 +47,10 @@ const treeData: TreeItem[] = [
 describe('Settings comp is function', () => {
   beforeAll(() => {
     config();
+    firebase.app().firestore();
+  });
+  afterAll(() => {
+    firebase.app().delete();
   });
 
   test('Settings is function', () => {
