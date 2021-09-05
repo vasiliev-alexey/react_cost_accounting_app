@@ -1,0 +1,18 @@
+.container {
+  max-width: 100%; //This will make container to take screen width
+  // border: solid 1px red;
+  // height: 100vh;
+}
+
+body {
+  height: 100vh;
+  min-height: 100%;
+}
+
+#root {
+  width: 100%;
+}
+
+.border {
+  border: solid 1px red;
+}
